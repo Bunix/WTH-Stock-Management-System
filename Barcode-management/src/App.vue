@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <v-toolbar-title v-text="appName"></v-toolbar-title>
     <v-btn flat @click="userSignOut" v-if="isAuthenticated">
       <v-icon left>exit_to_app</v-icon>
@@ -36,11 +35,11 @@ export default {
         {
           icon: "face",
           title: "Sign Up",
-          link: "/singup"
+          link: "/signup"
         }, {
           icon: "lock_open",
           title: "Sign In",
-          link: "/singin"
+          link: "/signin"
         }
       ]
     }

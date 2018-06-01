@@ -10,12 +10,12 @@ const routerOptions = [
     component: 'SignUp'
   },
   {
-    path: '/login',
-    component: 'Login'
+    path: '/signin',
+    component: 'Signin'
   },
   {
     path: '/',
-    component: 'HelloWorld'
+    component: 'Home'
   }
 ]
 
