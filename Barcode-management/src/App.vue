@@ -1,24 +1,62 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <v-toolbar-title v-text="appName"></v-toolbar-title>
+    <v-btn flat @click="userSignOut" v-if="isAuthenticated">
+      <v-icon left>exit_to_app</v-icon>
+      Sign Out
+    </v-btn>
+    <v-btn
+      flat
+      v-for="(item) in toolbarItems"
+      :key="item"
+      :to="item.link">
+      <v-icon left>{{ item.icon }}</v-icon>
+      {{ item.title }}
+    </v-btn>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  computed: {
+    appName() {
+      return this.$store.getters.appTitle
+    },
+    isAuthenticated() {
+      return (
+        this.$store.getters.getUser !== null &&
+        this.$store.getters.getUser !== undefined
+      )
+    },
+    toolbarItems() {
+      return this.isAuthenticated ? [] : [
+        {
+          icon: "face",
+          title: "Sign Up",
+          link: "/singup"
+        }, {
+          icon: "lock_open",
+          title: "Sign In",
+          link: "/singin"
+        }
+      ]
+    }
+  },
+  methods: {
+    userSignOut() {
+      this.$store.dispatch("userSignOut");
+    }
   }
 }
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  line-height: 2;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
