@@ -8,7 +8,7 @@
     <v-btn
       flat
       v-for="(item) in toolbarItems"
-      :key="item"
+      :key="item.i"
       :to="item.link">
       <v-icon left>{{ item.icon }}</v-icon>
       {{ item.title }}
@@ -33,13 +33,13 @@ export default {
     toolbarItems() {
       return this.isAuthenticated ? [] : [
         {
-          icon: "face",
-          title: "Sign Up",
-          link: "/signup"
+          icon: 'face',
+          title: 'Sign Up',
+          link: '/signup'
         }, {
-          icon: "lock_open",
-          title: "Sign In",
-          link: "/signin"
+          icon: 'lock_open',
+          title: 'Sign In',
+          link: '/signin'
         }
       ]
     }

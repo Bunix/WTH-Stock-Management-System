@@ -27,4 +27,7 @@ new Vue({
   }
 }).$mount('#app')
 
+// Make Sign-ip/Sign-up https://coursetro.com/posts/code/139/Vue-Router-Tutorial---Using-Vue's-Router-Library
+// https://medium.com/@Big.Wattanachai/%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87-single-page-application-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-vue-js-%E0%B9%81%E0%B8%A5%E0%B8%B0-firebase-authentication-1c8219aa77bd
+
 

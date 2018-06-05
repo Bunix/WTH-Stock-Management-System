@@ -30,18 +30,3 @@ export default new Router({
   mode: 'history',
   routes
 })
-
-// export default new Router({
-//   routes: [
-//     {
-//       path: '/',
-//       name: 'helloworld',
-//       component: HelloWorld
-//     },
-//     {
-//       path: '/test',
-//       name: 'test',
-//       component: Test
-//     }
-//   ]
-// })
