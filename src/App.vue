@@ -250,8 +250,8 @@ export default {
       return this.isAuthenticated ? [] : [
         {
           icon: 'lock_open',
-          title: 'Sign In',
-          link: '/signin'
+          title: 'Log In',
+          link: '/login'
         }
       ]
     }
