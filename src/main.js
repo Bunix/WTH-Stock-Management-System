@@ -22,6 +22,8 @@ new Vue({
     firebase.auth().onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) {
         store.dispatch('autoSignIn', firebaseUser)
+      } else {
+        store.dispatch('returnLogin', firebaseUser)
       }
     })
   }

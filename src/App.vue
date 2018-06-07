@@ -261,7 +261,7 @@ export default {
       return
     },
     userSignOut() {
-      this.$store.dispatch("userSignOut");
+      this.$store.dispatch('userSignOut');
     }
   },
   props: {
