@@ -35,6 +35,6 @@ export const actions = {
   userSignOut ({commit}) {
     firebase.auth().signOut()
     commit('setUser', null)
-    router.push('/signin')
+    router.push('/login')
   }
 }

@@ -1,5 +1,5 @@
 export const state = {
-  appName: 'Barcode Management System',
+  appName: 'Barcode Management',
   user: null,
   error: null,
   loading: false
