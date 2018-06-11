@@ -18,7 +18,7 @@ const routerOptions = [
     component: 'Login'
   },
   {
-    path: '/',
+    path: '/home',
     component: 'Home'
   }
 ]

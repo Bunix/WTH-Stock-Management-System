@@ -1,21 +1,10 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <v-navigation-drawer
-        v-if="isAuthenticated"
-        fixed
-        :clipped="$vuetify.breakpoint.mdAndUp"
-        app
-        v-model="drawer"
-      >
+      <v-navigation-drawer v-if="isAuthenticated" fixed :clipped="$vuetify.breakpoint.mdAndUp" app v-model="drawer">
         <v-list dense>
           <template v-for="item in items">
-            <v-layout
-              row
-              v-if="item.heading"
-              align-center
-              :key="item.heading"
-            >
+            <v-layout row v-if="item.heading" align-center :key="item.heading">
               <v-flex xs6>
                 <v-subheader v-if="item.heading">
                   {{ item.heading }}
@@ -25,13 +14,7 @@
                 <a href="#!" class="body-2 black--text">EDIT</a>
               </v-flex>
             </v-layout>
-            <v-list-group
-              v-else-if="item.children"
-              v-model="item.model"
-              :key="item.text"
-              :prepend-icon="item.model ? item.icon : item['icon-alt']"
-              append-icon=""
-            >
+            <v-list-group v-else-if="item.children" v-model="item.model" :key="item.text" :prepend-icon="item.model ? item.icon : item['icon-alt']" append-icon="">
               <v-list-tile slot="activator">
                 <v-list-tile-content>
                   <v-list-tile-title>
@@ -40,9 +23,7 @@
                 </v-list-tile-content>
               </v-list-tile>
               <v-list-tile
-                v-for="(child, i) in item.children"
-                :key="i"
-              >
+                v-for="(child, i) in item.children" :key="i">
                 <v-list-tile-action v-if="child.icon">
                   <v-icon>{{ child.icon }}</v-icon>
                 </v-list-tile-action>
@@ -66,24 +47,12 @@
           </template>
         </v-list>
       </v-navigation-drawer>
-      <v-toolbar
-        color="blue darken-3"
-        dark
-        app
-        :clipped-left="$vuetify.breakpoint.mdAndUp"
-        fixed
-      >
+      <v-toolbar color="blue darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
         <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
           <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
           <span class="hidden-sm-and-down" v-text="appName"></span>
         </v-toolbar-title>
-        <v-text-field
-          flat
-          solo-inverted
-          prepend-icon="search"
-          label="Search"
-          class="hidden-sm-and-down"
-        ></v-text-field>
+        <v-text-field flat solo-inverted prepend-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
         <v-spacer></v-spacer>
         <v-btn icon>
           <v-icon>apps</v-icon>
@@ -93,21 +62,15 @@
         </v-btn>
         <v-btn icon large>
           <v-avatar size="32px" tile>
-            <img
-              src="https://vuetifyjs.com/static/doc-images/logo.svg"
-              alt="Vuetify"
-            >
+            <img src="https://vuetifyjs.com/static/doc-images/logo.svg" alt="Vuetify">
           </v-avatar>
         </v-btn>
+        <span class="hidden-sm-and-down" v-text="userEmail"></span>
         <v-btn flat @click="userSignOut" v-if="isAuthenticated">
           <v-icon left>exit_to_app</v-icon>
           Sign Out
         </v-btn>
-        <v-btn
-          flat
-          v-for="(item) in toolbarItems"
-          :key="item.i"
-          :to="item.link">
+        <v-btn flat v-for="(item) in toolbarItems" :key="item.i" :to="item.link">
           <v-icon left>{{ item.icon }}</v-icon>
           {{ item.title }}
         </v-btn>
@@ -119,22 +82,12 @@
           </v-layout>
         </v-container>
       </v-content>
-      <v-btn
-        fab
-        bottom
-        right
-        color="pink"
-        dark
-        fixed
-        @click.stop="dialog = !dialog"
-      >
+      <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog">
         <v-icon>add</v-icon>
       </v-btn>
       <v-dialog v-model="dialog" width="800px">
         <v-card>
-          <v-card-title
-            class="grey lighten-4 py-4 title"
-          >
+          <v-card-title class="grey lighten-4 py-4 title">
             Create contact
           </v-card-title>
           <v-container grid-list-sm class="pa-4">
@@ -142,46 +95,25 @@
               <v-flex xs12 align-center justify-space-between>
                 <v-layout align-center>
                   <v-avatar size="40px" class="mr-3">
-                    <img
-                      src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png"
-                      alt=""
-                    >
+                    <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt="">
                   </v-avatar>
-                  <v-text-field
-                    placeholder="Name"
-                  ></v-text-field>
+                  <v-text-field placeholder="Name"></v-text-field>
                 </v-layout>
               </v-flex>
               <v-flex xs6>
-                <v-text-field
-                  prepend-icon="business"
-                  placeholder="Company"
-                ></v-text-field>
+                <v-text-field prepend-icon="business" placeholder="Company"></v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field
-                  placeholder="Job title"
-                ></v-text-field>
+                <v-text-field placeholder="Job title"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field
-                  prepend-icon="mail"
-                  placeholder="Email"
-                ></v-text-field>
+                <v-text-field prepend-icon="mail" placeholder="Email"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field
-                  type="tel"
-                  prepend-icon="phone"
-                  placeholder="(000) 000 - 0000"
-                  mask="phone"
-                ></v-text-field>
+                <v-text-field type="tel" prepend-icon="phone" placeholder="(000) 000 - 0000" mask="phone"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field
-                  prepend-icon="notes"
-                  placeholder="Notes"
-                ></v-text-field>
+                <v-text-field prepend-icon="notes" placeholder="Notes"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -239,6 +171,9 @@ export default {
   computed: {
     appName() {
       return this.$store.getters.appTitle
+    },
+    userEmail() {
+      return this.isAuthenticated ? this.$store.getters.userEmail : []
     },
     isAuthenticated() {
       return (

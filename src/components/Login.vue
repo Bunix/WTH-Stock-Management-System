@@ -7,12 +7,7 @@
             <v-toolbar-title>Login form</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-tooltip bottom>
-              <v-btn
-                icon
-                large
-                target="_blank"
-                slot="activator"
-              >
+              <v-btn icon large target="_blank" slot="activator">
                 <v-icon large>code</v-icon>
               </v-btn>
               <span>Source</span>

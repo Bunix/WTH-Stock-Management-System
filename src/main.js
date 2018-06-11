@@ -6,11 +6,21 @@ import { store } from './store'
 
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import VueFire from 'vuefire'
+import 'firebase/firestore'
 import firebase from 'firebase'
 import { firebaseConfig } from './config'
 
+
 Vue.use(Vuetify)
+Vue.use(VueFire)
 firebase.initializeApp(firebaseConfig)
+
+export const db = firebase.firestore()
+const settings = {/* your settings... */ timestampsInSnapshots: true};
+db.settings(settings);
+// eslint-disable-next-line
+console.log(db.collection('Finished_Order'))
 
 Vue.config.productionTip = false
 

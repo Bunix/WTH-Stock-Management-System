@@ -2,6 +2,9 @@ export const getters = {
   appTitle(state) {
     return state.appName
   },
+  userEmail(state) {
+    return state.user.email
+  },
   getUser(state) {
     return state.user
   },
