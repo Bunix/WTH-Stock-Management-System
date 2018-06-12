@@ -2,7 +2,7 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="finishedOrder"
+      :items="filteredItems"
       hide-actions
       class="elevation-2"
       :loading="tblLoading"
@@ -15,16 +15,20 @@
       </template>
     </v-data-table>
     <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
+    <svg id="code128"></svg>
+    <v-btn color="primary" @click.native="getbarcode">Barcode</v-btn>
   </div>
 </template>
-
 <script>
 import { db } from '../main'
+import jsbarcode from 'jsbarcode'
 
 export default {
   data() {
     return {
       tblLoading: true,
+      inStock: false,
+      hasBarcode: false,
       finishedOrder: [],
       headers: [
         { text: 'Order Number', value: 'basicInformation.orderNumber' },
@@ -46,7 +50,7 @@ export default {
     }
   },
   methods: {
-    addOrder () {
+    addOrder() {
       db.collection('Finished_Order').add({ 
         basicInformation: {
           orderDate: new Date('2018-06-05 12:05:06'),
@@ -80,6 +84,18 @@ export default {
           totalAmount: 14,
           usePoint: 0
         }
+      })
+    },
+    getbarcode() {
+      jsbarcode("#code128", "WTH180605-1-A")
+    }
+  },
+  computed: {
+    filteredItems() {
+      /* eslint-disable */
+      console.log('sdsd')
+      return this.finishedOrder.filter((order) => {
+        return !this.finishedOrder || (order.inStock === this.inStock)
       })
     }
   }

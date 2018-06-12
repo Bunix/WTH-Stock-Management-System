@@ -172,7 +172,6 @@ export default {
   },
   methods: {
     test() {
-      // this.$store.dispatch('goFinishedOrder');
     },
     userSignOut() {
       this.$store.dispatch('userSignOut');
