@@ -18,8 +18,8 @@ const routerOptions = [
     component: 'Login'
   },
   {
-    path: '/home',
-    component: 'Home'
+    path: '/finished',
+    component: 'Finished'
   }
 ]
 

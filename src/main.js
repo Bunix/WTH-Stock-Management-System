@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-import App from './App.vue'
+import App from './App'
 import router from './router'
 import { store } from './store'
 
@@ -11,7 +11,6 @@ import 'firebase/firestore'
 import firebase from 'firebase'
 import { firebaseConfig } from './config'
 
-
 Vue.use(Vuetify)
 Vue.use(VueFire)
 firebase.initializeApp(firebaseConfig)
@@ -20,7 +19,7 @@ export const db = firebase.firestore()
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 db.settings(settings);
 // eslint-disable-next-line
-console.log(db.collection('Finished_Order'))
+// console.log(db.collection('Finished_Order').get())
 
 Vue.config.productionTip = false
 

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <v-app id="inspire">
+      <!-- Side menu -->
       <v-navigation-drawer v-if="isAuthenticated" fixed :clipped="$vuetify.breakpoint.mdAndUp" app v-model="drawer">
         <v-list dense>
           <template v-for="item in items">
@@ -34,7 +35,8 @@
                 </v-list-tile-content>
               </v-list-tile>
             </v-list-group>
-            <v-list-tile v-else @click="test" :key="item.text">
+            <!-- <v-list-tile v-else @click="test" :key="item.text"> -->
+            <v-list-tile v-else :key="item.text" :to="`${item.link}`">
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-action>
@@ -47,6 +49,7 @@
           </template>
         </v-list>
       </v-navigation-drawer>
+      <!-- Navebar -->
       <v-toolbar color="blue darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
         <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
           <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
@@ -75,6 +78,7 @@
           {{ item.title }}
         </v-btn>
       </v-toolbar>
+      <!-- DynamicContent section -->
       <v-content>
         <v-container fluid fill-height>
           <v-layout justify-center align-center>
@@ -82,9 +86,11 @@
           </v-layout>
         </v-container>
       </v-content>
+      <!-- Bottom right button -->
       <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog">
         <v-icon>add</v-icon>
       </v-btn>
+      <!-- Modal popup -->
       <v-dialog v-model="dialog" width="800px">
         <v-card>
           <v-card-title class="grey lighten-4 py-4 title">
@@ -136,36 +142,9 @@ export default {
     dialog: false,
     drawer: null,
     items: [
-      { icon: 'contacts', text: 'Contacts' },
-      { icon: 'history', text: 'Frequently contacted' },
-      { icon: 'content_copy', text: 'Duplicates' },
-      {
-        icon: 'keyboard_arrow_up',
-        'icon-alt': 'keyboard_arrow_down',
-        text: 'Labels',
-        model: true,
-        children: [
-          { icon: 'add', text: 'Create label' }
-        ]
-      },
-      {
-        icon: 'keyboard_arrow_up',
-        'icon-alt': 'keyboard_arrow_down',
-        text: 'More',
-        model: false,
-        children: [
-          { text: 'Import' },
-          { text: 'Export' },
-          { text: 'Print' },
-          { text: 'Undo changes' },
-          { text: 'Other contacts' }
-        ]
-      },
-      { icon: 'settings', text: 'Settings' },
-      { icon: 'chat_bubble', text: 'Send feedback' },
-      { icon: 'help', text: 'Help' },
-      { icon: 'phonelink', text: 'App downloads' },
-      { icon: 'keyboard', text: 'Go to the old version' }
+      { icon: 'dashboard', text: 'Finished Order', link: '/finished' },
+      { icon: 'store', text: 'In Stock Order', link: '/instock' },
+      { icon: 'history', text: 'History Order', link: '/history' }
     ]
   }),
   computed: {
@@ -193,7 +172,7 @@ export default {
   },
   methods: {
     test() {
-      return
+      // this.$store.dispatch('goFinishedOrder');
     },
     userSignOut() {
       this.$store.dispatch('userSignOut');
