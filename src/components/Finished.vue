@@ -11,6 +11,7 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.item.basicInformation.orderNumber }}</td>
         <td>{{ props.item.customerInformation.name }}</td>
+        <td>{{ props.item.inStock }}</td>
         <td>{{ props.item.basicInformation.orderDate.toDate() }}</td>
       </template>
     </v-data-table>
@@ -26,6 +27,7 @@ import jsbarcode from 'jsbarcode'
 export default {
   data() {
     return {
+      isFilter: false,
       tblLoading: true,
       inStock: false,
       hasBarcode: false,
@@ -33,6 +35,7 @@ export default {
       headers: [
         { text: 'Order Number', value: 'basicInformation.orderNumber' },
         { text: 'Customer', value: 'customerInformation.name' },
+        { text: 'In Stock', value: 'inStock' },
         { text: 'Create At', value: 'basicInformation.orderDate' }
       ]
     }
@@ -92,11 +95,13 @@ export default {
   },
   computed: {
     filteredItems() {
-      /* eslint-disable */
-      console.log('sdsd')
-      return this.finishedOrder.filter((order) => {
-        return !this.finishedOrder || (order.inStock === this.inStock)
-      })
+      if(this.isFilter) {
+        return this.finishedOrder.filter((order) => {
+          return !this.finishedOrder || (order.inStock === this.inStock)
+        })
+      } else {
+        return this.finishedOrder
+      }
     }
   }
 }
