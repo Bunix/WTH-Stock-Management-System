@@ -18,8 +18,6 @@ firebase.initializeApp(firebaseConfig)
 export const db = firebase.firestore()
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 db.settings(settings);
-// eslint-disable-next-line
-// console.log(db.collection('Finished_Order').get())
 
 Vue.config.productionTip = false
 

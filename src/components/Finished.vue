@@ -11,8 +11,10 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.item.basicInformation.orderNumber }}</td>
         <td>{{ props.item.customerInformation.name }}</td>
-        <td>{{ props.item.inStock }}</td>
-        <td>{{ props.item.basicInformation.orderDate.toDate() }}</td>
+        <td v-if="props.item.inStock === true">Yes</td>
+        <td v-else>No</td>
+        <td>{{ getDate(props.item.basicInformation.orderDate) }}</td>
+        <!-- <td>{{ hello(date) }}</td> -->
       </template>
     </v-data-table>
     <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
@@ -29,7 +31,7 @@ export default {
     return {
       isFilter: false,
       tblLoading: true,
-      inStock: false,
+      inStock: true,
       hasBarcode: false,
       finishedOrder: [],
       headers: [
@@ -91,13 +93,16 @@ export default {
     },
     getbarcode() {
       jsbarcode("#code128", "WTH180605-1-A")
+    },
+    getDate(timeObj) {
+      return new Date(timeObj.seconds * 1000).toUTCString()
     }
   },
   computed: {
     filteredItems() {
       if(this.isFilter) {
         return this.finishedOrder.filter((order) => {
-          return !this.finishedOrder || (order.inStock === this.inStock)
+          return order.inStock === this.inStock
         })
       } else {
         return this.finishedOrder
