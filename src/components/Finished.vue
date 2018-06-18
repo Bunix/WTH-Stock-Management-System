@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="menu-grp">
+      <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
+      <v-btn color="primary" @click.native="getbarcode">Barcode</v-btn>
+    </div>
+
     <v-data-table
       :headers="headers"
       :items="filteredItems"
@@ -10,16 +15,15 @@
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.basicInformation.orderNumber }}</td>
+        <td>{{ getOrderQuatity(props.item.checkOutInformation) }}</td>
+        <td v-if="props.item.inStock === true"><i class="material-icons font-green">done</i></td>
+        <td v-else><i class="material-icons font-red">clear</i></td>
         <td>{{ props.item.customerInformation.name }}</td>
-        <td v-if="props.item.inStock === true">Yes</td>
-        <td v-else>No</td>
         <td>{{ getDate(props.item.basicInformation.orderDate) }}</td>
         <!-- <td>{{ hello(date) }}</td> -->
       </template>
     </v-data-table>
-    <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
     <svg id="code128"></svg>
-    <v-btn color="primary" @click.native="getbarcode">Barcode</v-btn>
   </div>
 </template>
 <script>
@@ -35,9 +39,10 @@ export default {
       hasBarcode: false,
       finishedOrder: [],
       headers: [
-        { text: 'Order Number', value: 'basicInformation.orderNumber' },
-        { text: 'Customer', value: 'customerInformation.name' },
+        { text: 'Order Code', value: 'basicInformation.orderNumber' },
+        { text: 'Order Quatity', value: 'inStock' },
         { text: 'In Stock', value: 'inStock' },
+        { text: 'Customer', value: 'customerInformation.name' },
         { text: 'Create At', value: 'basicInformation.orderDate' }
       ]
     }
@@ -96,6 +101,13 @@ export default {
     },
     getDate(timeObj) {
       return new Date(timeObj.seconds * 1000).toUTCString()
+    },
+    getOrderQuatity(checkOutInformation) {
+      let totalQuantity = 0
+      for(let product in checkOutInformation) {
+        totalQuantity += checkOutInformation[product].quantity
+      }
+      return totalQuantity
     }
   },
   computed: {
@@ -110,5 +122,16 @@ export default {
     }
   }
 }
-
 </script>
+
+<style>
+  .font-red {
+    color: rgb(230, 49, 49)
+  }
+
+  .font-green {
+    color: rgb(17, 193, 87)
+  }
+</style>
+
+
