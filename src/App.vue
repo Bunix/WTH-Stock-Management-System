@@ -142,9 +142,10 @@ export default {
     dialog: false,
     drawer: null,
     items: [
-      { icon: 'dashboard', text: 'Finished Order', link: '/finished' },
+      { icon: 'dashboard', text: 'Ordering', link: '/finished' },
       { icon: 'store', text: 'In Stock Order', link: '/instock' },
-      { icon: 'history', text: 'History Order', link: '/history' }
+      { icon: 'history', text: 'History Order', link: '/history' },
+      { icon: 'print', text: 'Print Barcode', link: '/print_barcode' }
     ]
   }),
   computed: {

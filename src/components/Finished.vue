@@ -1,30 +1,45 @@
 <template>
-  <div>
+  <v-card>
     <div class="menu-grp">
       <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
       <v-btn color="primary" @click.native="getbarcode">Barcode</v-btn>
     </div>
 
+    <v-card-title>
+      <v-text-field
+        @keyup="searchQuery"
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>   
+
+    <v-spacer></v-spacer>
+    
     <v-data-table
       :headers="headers"
-      :items="filteredItems"
+      :items="finishedOrderLocal"
       hide-actions
-      class="elevation-2"
       :loading="tblLoading"
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.basicInformation.orderNumber }}</td>
         <td>{{ getOrderQuatity(props.item.checkOutInformation) }}</td>
-        <td v-if="props.item.inStock === true"><i class="material-icons font-green">done</i></td>
+        <td v-if="props.item.printStatus === true"><i class="material-icons font-green">done</i></td>
         <td v-else><i class="material-icons font-red">clear</i></td>
         <td>{{ props.item.customerInformation.name }}</td>
         <td>{{ getDate(props.item.basicInformation.orderDate) }}</td>
-        <!-- <td>{{ hello(date) }}</td> -->
+        <td v-if="props.item.shipedDate === ''">-</td>
+        <td v-else>{{ getDate(props.item.shipedDate) }}</td>
+        <td v-if="props.item.shelf === ''">-</td>
+        <td v-else>{{ props.item.shelf }}</td>
       </template>
     </v-data-table>
     <svg id="code128"></svg>
-  </div>
+  </v-card>
 </template>
 <script>
 import { db } from '../main'
@@ -33,17 +48,21 @@ import jsbarcode from 'jsbarcode'
 export default {
   data() {
     return {
-      isFilter: false,
+      // isFilter: false,
+      search: '',
       tblLoading: true,
       inStock: true,
       hasBarcode: false,
       finishedOrder: [],
+      finishedOrderLocal: [],
       headers: [
         { text: 'Order Code', value: 'basicInformation.orderNumber' },
-        { text: 'Order Quatity', value: 'inStock' },
-        { text: 'In Stock', value: 'inStock' },
+        { text: 'Product Quatity', value: 'Product Quatity' },
+        { text: 'Barcode', value: 'Print Status' },
         { text: 'Customer', value: 'customerInformation.name' },
-        { text: 'Create At', value: 'basicInformation.orderDate' }
+        { text: 'Order Date', value: 'basicInformation.orderDate' },
+        { text: 'Shiped Date', value: 'Shipped Date' },
+        { text: 'Shelf', value: 'Shelf' }
       ]
     }
   },
@@ -56,51 +75,70 @@ export default {
     finishedOrder: function () {
       if(this.finishedOrder.length !== 0) {
         this.tblLoading = false
+        this.finishedOrderLocal = this.finishedOrder
       }
     }
   },
   methods: {
+    searchQuery() {
+      if(this.search !== '') {
+        this.finishedOrderLocal = this.finishedOrder
+          .filter((order) => {
+            return order.basicInformation.orderNumber.toLowerCase().includes(this.search)
+          })
+      } else {
+        this.finishedOrderLocal = this.finishedOrder
+      }
+
+    },
+
     addOrder() {
       db.collection('Finished_Order').add({ 
         basicInformation: {
-          orderDate: new Date('2018-06-05 12:05:06'),
-          orderNumber: 'WTH180605G0122'
+          orderDate: new Date('2018-06-09 05:45:39'),
+          orderNumber: 'WTH180609G0121'
         },
         checkOutInformation: {
-          23380656: {
-            name: 'HONDA : Rear Carrier ',
-            point: 138,
-            price: 13151,
+          th0006604: {
+            name: 'Ohlins : Rear Shock Absorber For Yamaha MT-09 Tracer/MT-09/XSR900 : Ohlins',
+            point: 291,
+            price: 27598,
             quantity: 1
           }
         },
         customerInformation: {
-          email: 'test@gmail.com',
-          name: 'Dolores',
-          role: 'Host'
+          email: 'jays4147@yahoo.com',
+          name: 'Chessada Chinmateepitak',
+          role: 'General'
         },
         deliveryInformation: {
           address: 'Westworld',
-          name: 'Teddy',
-          phome: '087-7174080'
+          name: 'Dolores',
+          phone: '087-7114080'
         },
-        inStock: false,
         paymentInformation: 'Credit card',
         total: {
           coupon: 0,
           fee: 0,
           shippingCost: 100,
-          subtotal: 175480,
-          totalAmount: 14,
+          subtotal: 27598,
+          totalAmount: 27598,
           usePoint: 0
-        }
+        },
+        inStock: false,
+        inStockDate: '',
+        shipedDate: '',
+        trackingNumber: '',
+        barcodeQuantity: 0,
+        printStatus: false,
+        shelf: ''
       })
     },
     getbarcode() {
       jsbarcode("#code128", "WTH180605-1-A")
     },
     getDate(timeObj) {
-      return new Date(timeObj.seconds * 1000).toUTCString()
+      return new Date(timeObj.seconds * 1000).toLocaleDateString()
     },
     getOrderQuatity(checkOutInformation) {
       let totalQuantity = 0
@@ -109,18 +147,18 @@ export default {
       }
       return totalQuantity
     }
-  },
-  computed: {
-    filteredItems() {
-      if(this.isFilter) {
-        return this.finishedOrder.filter((order) => {
-          return order.inStock === this.inStock
-        })
-      } else {
-        return this.finishedOrder
-      }
-    }
   }
+  // computed: {
+  //   filteredItems() {
+  //     if(this.isFilter) {
+  //       return this.finishedOrder.filter((order) => {
+  //         return order.inStock === this.inStock
+  //       })
+  //     } else {
+  //       return this.finishedOrder
+  //     }
+  //   }
+  // }
 }
 </script>
 
