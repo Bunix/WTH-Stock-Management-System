@@ -14,7 +14,7 @@
         single-line
         hide-details
       ></v-text-field>
-    </v-card-title>   
+    </v-card-title>
 
     <v-spacer></v-spacer>
     
@@ -82,9 +82,11 @@ export default {
   methods: {
     searchQuery() {
       if(this.search !== '') {
+  
         this.finishedOrderLocal = this.finishedOrder
           .filter((order) => {
-            return order.basicInformation.orderNumber.toLowerCase().includes(this.search)
+            return order.customerInformation.name.toLowerCase().includes(this.search) || order.basicInformation.orderNumber.toLowerCase().includes(this.search)
+            
           })
       } else {
         this.finishedOrderLocal = this.finishedOrder
