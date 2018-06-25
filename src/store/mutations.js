@@ -7,5 +7,10 @@ export const mutations = {
   },
   setLoading(state, payload) {
     state.loading = payload
+  },
+  setBarcodePrintLists(state, payload) {
+    // eslint-disable-next-line
+    // console.log(payload)
+    state.barcodePrintLists = payload
   }
 }

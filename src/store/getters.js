@@ -13,5 +13,10 @@ export const getters = {
   },
   getLoading(state) {
     return state.loading
+  },
+  getBarcodePrintLists(state) {
+    // eslint-disable-next-line
+    // console.log(state)
+    return state.barcodePrintLists
   }
 }

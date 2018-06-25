@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// import store from '@/store'
 
 
 Vue.use(Router)
@@ -20,8 +21,24 @@ const routerOptions = [
   {
     path: '/finished',
     component: 'Finished'
+  },
+  {
+    path: '/print',
+    component: 'PrintBarcode'
+    // beforeRouteEnter: checkBarcode
   }
 ]
+
+// function checkBarcode(to, from, next) {
+//   // eslint-disable-next-line
+//   console.log('Check')
+//   if (!this.$store.getters.getBarcodePrintLists) {
+//     next()  // they are not authorized, so redirect to login
+   
+//   } else {
+//     next('/') // we are authorized, continue on to the requested route
+//  }
+// }
 
 const routes = routerOptions.map(route => {
   return {

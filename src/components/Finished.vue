@@ -1,8 +1,8 @@
 <template>
-  <v-card>
+  <v-card class="dashboard">
     <div class="menu-grp">
       <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
-      <v-btn color="primary" @click.native="getbarcode">Barcode</v-btn>
+      <v-btn color="primary" @click.native="barcodePrint">Print Barcode</v-btn>
     </div>
 
     <v-card-title>
@@ -172,6 +172,9 @@ export default {
         totalQuantity += checkOutInformation[product].quantity
       }
       return totalQuantity
+    },
+    barcodePrint() {
+      this.$store.dispatch('printBarcode', this.finishedOrderLocal)
     }
   }
   // computed: {
@@ -195,6 +198,10 @@ export default {
 
   .font-green {
     color: rgb(17, 193, 87)
+  }
+
+  .dashboard {
+    min-height: 100%;
   }
 </style>
 

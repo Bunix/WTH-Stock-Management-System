@@ -29,15 +29,24 @@ export const actions = {
         commit('setLoading', false)
       })
   },
-  autoSignIn ({commit}, payload) {
+  autoSignIn({commit}, payload) {
     commit('setUser', payload)
   },
-  userSignOut ({commit}) {
+  userSignOut({commit}) {
     firebase.auth().signOut()
     commit('setUser', null)
     router.push('/login')
   },
-  returnLogin () {
+  returnLogin() {
     router.push('/login')
+  },
+  returnHome() {
+    router.push('/finished')
+  },
+  printBarcode({commit}, payload) {
+    commit('setBarcodePrintLists', payload)
+    // eslint-disable-next-line
+    // console.log(payload)
+    router.push('/print')
   }
 }
