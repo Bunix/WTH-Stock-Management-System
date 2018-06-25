@@ -13,7 +13,7 @@
         label="Search"
         single-line
         hide-details
-      ></v-text-field>
+      ></v-text-field><!-- Selected -->
     </v-card-title>
 
     <v-spacer></v-spacer>
@@ -21,11 +21,32 @@
     <v-data-table
       :headers="headers"
       :items="finishedOrderLocal"
+      select-all
+      v-model="selected"
       hide-actions
       :loading="tblLoading"
+      item-key="key"
+      :search="search"
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+      <template slot="headerCell" slot-scope="props">
+        <v-tooltip bottom>
+          <span slot="activator">
+            {{ props.header.text }}
+          </span>
+          <span>
+            {{ props.header.text }}
+          </span>
+        </v-tooltip>
+      </template> 
       <template slot="items" slot-scope="props">
+        <td>
+          <v-checkbox
+            v-model="props.selected"
+            primary
+            hide-details
+          ></v-checkbox>
+        </td>
         <td>{{ props.item.basicInformation.orderNumber }}</td>
         <td>{{ getOrderQuatity(props.item.checkOutInformation) }}</td>
         <td v-if="props.item.printStatus === true"><i class="material-icons font-green">done</i></td>
@@ -44,11 +65,13 @@
 <script>
 import { db } from '../main'
 import jsbarcode from 'jsbarcode'
+// const uuidv1 = require('uuid/v1')
 
 export default {
   data() {
     return {
       // isFilter: false,
+      selected: [],
       search: '',
       tblLoading: true,
       inStock: true,
@@ -86,7 +109,6 @@ export default {
         this.finishedOrderLocal = this.finishedOrder
           .filter((order) => {
             return order.customerInformation.name.toLowerCase().includes(this.search) || order.basicInformation.orderNumber.toLowerCase().includes(this.search)
-            
           })
       } else {
         this.finishedOrderLocal = this.finishedOrder
@@ -137,6 +159,8 @@ export default {
       })
     },
     getbarcode() {
+      // // eslint-disable-next-line
+      // console.log(uuidv1())
       jsbarcode("#code128", "WTH180605-1-A")
     },
     getDate(timeObj) {

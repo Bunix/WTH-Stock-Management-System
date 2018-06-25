@@ -11,6 +11,7 @@ import 'firebase/firestore'
 import firebase from 'firebase'
 import { firebaseConfig } from './config'
 
+
 Vue.use(Vuetify)
 Vue.use(VueFire)
 firebase.initializeApp(firebaseConfig)
