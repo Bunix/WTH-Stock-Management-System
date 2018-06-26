@@ -20,7 +20,7 @@
     
     <v-data-table
       :headers="headers"
-      :items="finishedOrderLocal"
+      :items="orderingList"
       select-all
       v-model="selected"
       hide-actions
@@ -48,13 +48,13 @@
           ></v-checkbox>
         </td>
         <td>{{ props.item.basicInformation.orderNumber }}</td>
-        <td>{{ getOrderQuatity(props.item.checkOutInformation) }}</td>
+        <td>{{ props.item.orderQuantity }} / {{ props.item.barcodeQuantity }}</td>
         <td v-if="props.item.printStatus === true"><i class="material-icons font-green">done</i></td>
         <td v-else><i class="material-icons font-red">clear</i></td>
         <td>{{ props.item.customerInformation.name }}</td>
-        <td>{{ getDate(props.item.basicInformation.orderDate) }}</td>
+        <td>{{ props.item.basicInformation.orderDate }}</td>
         <td v-if="props.item.shipedDate === ''">-</td>
-        <td v-else>{{ getDate(props.item.shipedDate) }}</td>
+        <td v-else>{{ props.item.shipedDate }}</td>
         <td v-if="props.item.shelf === ''">-</td>
         <td v-else>{{ props.item.shelf }}</td>
       </template>
@@ -64,7 +64,7 @@
 </template>
 <script>
 import { db } from '../main'
-import jsbarcode from 'jsbarcode'
+// import jsbarcode from 'jsbarcode'
 // const uuidv1 = require('uuid/v1')
 
 export default {
@@ -80,8 +80,8 @@ export default {
       finishedOrderLocal: [],
       headers: [
         { text: 'Order Code', value: 'basicInformation.orderNumber' },
-        { text: 'Product Quatity', value: 'Product Quatity' },
-        { text: 'Barcode', value: 'Print Status' },
+        { text: 'Product/Barcode QTY', value: 'Product & Barcode Quatity' },
+        { text: 'Has Barcode', value: 'Print Status' },
         { text: 'Customer', value: 'customerInformation.name' },
         { text: 'Order Date', value: 'basicInformation.orderDate' },
         { text: 'Shiped Date', value: 'Shipped Date' },
@@ -158,11 +158,6 @@ export default {
         shelf: ''
       })
     },
-    getbarcode() {
-      // // eslint-disable-next-line
-      // console.log(uuidv1())
-      jsbarcode("#code128", "WTH180605-1-A")
-    },
     getDate(timeObj) {
       return new Date(timeObj.seconds * 1000).toLocaleDateString()
     },
@@ -174,20 +169,31 @@ export default {
       return totalQuantity
     },
     barcodePrint() {
-      this.$store.dispatch('printBarcode', this.finishedOrderLocal)
+      // eslint-disable-next-line
+      // console.log(this.selected)
+      this.$store.dispatch('printBarcode', this.selected)
     }
+  },
+  computed: {
+    orderingList() {
+      return this.finishedOrderLocal.map((order) => {
+        order.barcodeQuantity = this.getOrderQuatity(order.checkOutInformation)
+        order.orderQuantity = this.getOrderQuatity(order.checkOutInformation)
+        order.basicInformation.orderDate = this.getDate(order.basicInformation.orderDate)
+        order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''
+        return order
+      })
+    }
+    // filteredItems() {
+    //   if(this.isFilter) {
+    //     return this.finishedOrder.filter((order) => {
+    //       return order.inStock === this.inStock
+    //     })
+    //   } else {
+    //     return this.finishedOrder
+    //   }
+    // }
   }
-  // computed: {
-  //   filteredItems() {
-  //     if(this.isFilter) {
-  //       return this.finishedOrder.filter((order) => {
-  //         return order.inStock === this.inStock
-  //       })
-  //     } else {
-  //       return this.finishedOrder
-  //     }
-  //   }
-  // }
 }
 </script>
 
