@@ -8,7 +8,7 @@
 
     <v-container grid-list-md>
       <v-layout row wrap>
-        <v-flex v-for="i in 60" :key="`2${i}`" xs2>
+        <v-flex v-for="i in 60" :key="`2${i}`" xs3>
           <v-card class="barcode" v-if="i < barcodeStartPos">
             <v-card-text class="px-0">
               
@@ -18,7 +18,7 @@
             <v-card-text class="px-0" v-if="typeof barcodeLists[i-barcodeStartPos] !== 'undefined'">
               <h5>{{barcodeLists[i-barcodeStartPos].basicInformation.orderNumber}}</h5>
               <!-- <p>{{i-barcodeStartPos}}</p> -->
-              <svg v-bind:id="'barcode-'+i" width="100%" height="80px"></svg>
+              <svg v-bind:id="'barcode-'+i"></svg>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import jsbarcode from 'jsbarcode'
+import JsBarcode from 'jsbarcode'
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -51,19 +51,21 @@ export default {
     test() {
       // eslint-disable-next-line
       // console.log(this.$store)
-      jsbarcode('#barcode-1', 'WTH180609G0121')
+      JsBarcode('#barcode-1', 'WTH180609G0121')
       // return this.barcodeLists
     }
   },
   updated: function() {
-    jsbarcode('#barcode-1', 'test', {format: "ean13"})
+    
+    // jsbarcode('#barcode-1', 'test', {format: "ean13"})
+    // JsBarcode("#barcode-2", "12345", {format: "pharmacode"});
     // eslint-disable-next-line
     // console.log(this.barcodeLists)
-    // this.barcodeLists.forEach((element) => {
-    //   // eslint-disable-next-line
-    //   // jsbarcode(`#barcode-${i+1}`, element)
-      
-    // })
+    this.barcodeLists.forEach((element, i) => {
+      // eslint-disable-next-line
+      // jsbarcode(`#barcode-${i+1}`, element)
+      JsBarcode(`#barcode-${i+1}`, element)
+    })
     // generateBarcode() {
       // jsbarcode('#code128', 'WTH180605-1-A')
       // this.barcodeLists.forEach((order, index) => {
@@ -94,7 +96,8 @@ export default {
   }
 
   .barcode {
-    min-height: 150px;
+    min-height: 178px;
+    max-height: 178px;
     padding: 0.5rem;
   }
 
@@ -103,5 +106,3 @@ export default {
     height: auto;
   }
 </style>
-
-
