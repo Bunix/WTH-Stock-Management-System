@@ -2,7 +2,7 @@
   <v-card class="dashboard">
     <div class="menu-grp">
       <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
-      <v-btn color="primary" @click.native="barcodePrint">Print Barcode</v-btn>
+      <v-btn color="primary" @click.native="generateBarcode">Generate Barcode</v-btn>
     </div>
 
     <v-card-title>
@@ -168,7 +168,7 @@ export default {
       }
       return totalQuantity
     },
-    barcodePrint() {
+    generateBarcode() {
       // eslint-disable-next-line
       // console.log(this.selected)
       this.$store.dispatch('printBarcode', this.selected)
