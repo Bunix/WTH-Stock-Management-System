@@ -64,12 +64,6 @@ export default {
       document.body.innerHTML = originalContents;
     },
     print() {
-      this.barcodeLists.forEach((element, i) => {
-        // eslint-disable-next-line
-        // console.log(element.basicInformation.orderNumber)
-        JsBarcode(`#barcode-${i+1}`, element.basicInformation.orderNumber)
-      })
-
       html2canvas(document.querySelector('#barcode-paper'), {
         // dpi: 150,
         width: 1240,
@@ -96,6 +90,14 @@ export default {
         // return true
       })
     }
+  },
+  mounted() {
+    // Generate barcode when element is render.
+    this.$nextTick(() => {
+      this.barcodeLists.forEach((element, i) => {
+        JsBarcode(`#barcode-${i+1}`, element.basicInformation.orderNumber)
+      })
+    })
   }
 }
 </script>
