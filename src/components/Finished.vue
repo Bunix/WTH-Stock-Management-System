@@ -1,11 +1,6 @@
 <template>
   <v-card class="dashboard">
-    <div class="menu-grp">
-      <v-btn color="primary" @click.native="addOrder">Add Order</v-btn>
-      <v-btn color="primary" @click.native="generateBarcode">Generate Barcode</v-btn>
-    </div>
-
-    <v-card-title>
+       <v-card-title>
       <v-text-field
         @keyup="searchQuery"
         v-model="search"
@@ -13,8 +8,14 @@
         label="Search"
         single-line
         hide-details
-      ></v-text-field><!-- Selected -->
+      ></v-text-field>
     </v-card-title>
+
+    <div class="menu-grp">
+      <!-- <v-btn color="primary" @click.native="addOrder">Add Order</v-btn> -->
+      <v-btn color="primary"  @click.native="generateBarcode">Get Order Barcode</v-btn>
+      <v-btn @click.native="setProductInStock">Add to Stock</v-btn>
+    </div>
 
     <v-spacer></v-spacer>
     
@@ -48,7 +49,7 @@
           ></v-checkbox>
         </td>
         <td>{{ props.item.basicInformation.orderNumber }}</td>
-        <td>{{ props.item.orderQuantity }} / {{ props.item.barcodeQuantity }}</td>
+        <td>{{ props.item.orderQuantity }}</td>
         <td v-if="props.item.printStatus === true"><i class="material-icons font-green">done</i></td>
         <td v-else><i class="material-icons font-red">clear</i></td>
         <td>{{ props.item.customerInformation.name }}</td>
@@ -80,7 +81,7 @@ export default {
       finishedOrderLocal: [],
       headers: [
         { text: 'Order Code', value: 'basicInformation.orderNumber' },
-        { text: 'Product/Barcode QTY', value: 'Product & Barcode Quatity' },
+        { text: 'Product QTY', value: 'Product & Barcode Quatity' },
         { text: 'Has Barcode', value: 'Print Status' },
         { text: 'Customer', value: 'customerInformation.name' },
         { text: 'Order Date', value: 'basicInformation.orderDate' },
@@ -177,7 +178,7 @@ export default {
   computed: {
     orderingList() {
       return this.finishedOrderLocal.map((order) => {
-        order.barcodeQuantity = this.getOrderQuatity(order.checkOutInformation)
+        // order.barcodeQuantity = this.getOrderQuatity(order.checkOutInformation)
         order.orderQuantity = this.getOrderQuatity(order.checkOutInformation)
         order.basicInformation.orderDate = this.getDate(order.basicInformation.orderDate)
         order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''

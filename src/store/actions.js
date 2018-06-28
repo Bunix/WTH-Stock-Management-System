@@ -1,6 +1,7 @@
 import firebase from 'firebase'
 import router from '@/router'
 
+
 export const actions = {
   userSignUp ({commit}, payload) {
     commit('setLoading', true)
@@ -48,5 +49,8 @@ export const actions = {
     // eslint-disable-next-line
     // console.log(payload)
     router.push('/print')
+  },
+  updateOrderData({commit}, payload) {
+    commit('updateFirebaseData', payload)
   }
 }

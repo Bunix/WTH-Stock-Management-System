@@ -16,7 +16,6 @@
           </v-card>
           <v-card class="barcode" v-else>
             <v-card-text class="px-0" v-if="typeof barcodeLists[i-barcodeStartPos] !== 'undefined'">
-              <h5>{{barcodeLists[i-barcodeStartPos].basicInformation.orderNumber}}</h5>
               <svg v-bind:id="'barcode-' + i"></svg>
             </v-card-text>
           </v-card>
@@ -47,23 +46,21 @@ export default {
     }
   },
   methods: {
+    // Render data as image and attach to new window then call print function
     print() {
+      /* eslint-disable */
+      console.log(this.barcodeLists)
       html2canvas(document.querySelector('#barcode-paper'), {
         dpi: 150,
         width: 1240,
-        height: 1754
+        height: 1754,
+        logging: false
       })
       .then(canvas => {
-        /* eslint-disable */
-        let myImage = canvas.toDataURL('image/png')
-        // let img = `<img src="${myImage}" width="1240px", height="1754px">`
-
-        // const myWindow = window.open('', '', 'width=1240, height=1754')
-        let img = `<img src="${myImage}" width="100%", height="auto">`
         const myWindow = window.open()
-        myWindow.document.body.innerHTML = '<div style="width: 21cm; min-height: 27.6cm; margin: 0 auto">' + img + '</div>'
-        // myWindow.print()
-        // myWindow.close()
+        myWindow.document.body.appendChild(canvas)
+        myWindow.print()
+        myWindow.close()
       })
     }
   },
@@ -71,7 +68,7 @@ export default {
     // Generate barcode when element is render.
     this.$nextTick(() => {
       this.barcodeLists.forEach((element, i) => {
-        JsBarcode(`#barcode-${i+1}`, element.basicInformation.orderNumber)
+        JsBarcode(`#barcode-${this.barcodeStartPos + i}`, element.basicInformation.orderNumber)
       })
     })
   }
