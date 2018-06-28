@@ -2,7 +2,6 @@
   <v-card class="sticker-paper">
     <div class="menu-grp">
       <v-btn color="primary" @click.native="print">Print</v-btn>
-      <v-btn @click.native="test('print-area')">Click</v-btn>
     </div>
 
     <v-spacer></v-spacer>
@@ -18,14 +17,12 @@
           <v-card class="barcode" v-else>
             <v-card-text class="px-0" v-if="typeof barcodeLists[i-barcodeStartPos] !== 'undefined'">
               <h5>{{barcodeLists[i-barcodeStartPos].basicInformation.orderNumber}}</h5>
-              <!-- <p>{{i-barcodeStartPos}}</p> -->
               <svg v-bind:id="'barcode-' + i"></svg>
             </v-card-text>
           </v-card>
         </v-flex>
       </v-layout>
     </v-container>
-    <div id="print-area"></div>
   </v-card>
 </template>
 
@@ -50,44 +47,23 @@ export default {
     }
   },
   methods: {
-    test(divName) {
-      // window.print();
-      /* eslint-disable */
-      console.log(document.getElementById(divName))
-      var printContents = document.getElementById(divName).innerHTML;
-      var originalContents = document.body.innerHTML;
-
-      document.body.innerHTML = printContents;
-
-      window.print();
-
-      document.body.innerHTML = originalContents;
-    },
     print() {
       html2canvas(document.querySelector('#barcode-paper'), {
-        // dpi: 150,
+        dpi: 150,
         width: 1240,
         height: 1754
       })
       .then(canvas => {
         /* eslint-disable */
         let myImage = canvas.toDataURL('image/png')
-        let img = `<img src="${myImage}" width="1240px", height="1754px">`
-        document.getElementById('print-area').innerHTML = img
-        // 'PRINT'
-        // const mywindow = window.open('', 'height=1754px, width=1240px')
-        //   mywindow.document.write('<html><head><title>' + document.title  + '</title>')
-        //   mywindow.document.write('</head><body >')
-        //   mywindow.document.write(`<img src="${myImage}" width="1240px", height="1754px">`)
-        //   mywindow.document.write('</body></html>')
+        // let img = `<img src="${myImage}" width="1240px", height="1754px">`
 
-        // mywindow.document.close() // necessary for IE >= 10
-        // mywindow.focus() // necessary for IE >= 10*/
-
-        // mywindow.print()
-        // mywindow.close()
-
-        // return true
+        // const myWindow = window.open('', '', 'width=1240, height=1754')
+        let img = `<img src="${myImage}" width="100%", height="auto">`
+        const myWindow = window.open()
+        myWindow.document.body.innerHTML = '<div style="width: 21cm; min-height: 27.6cm; margin: 0 auto">' + img + '</div>'
+        // myWindow.print()
+        // myWindow.close()
       })
     }
   },
@@ -103,9 +79,6 @@ export default {
 </script>
 
 <style>
-  #print-area {
-    display: none;
-  }
 
   .font-red {
     color: rgb(230, 49, 49)
