@@ -2,6 +2,7 @@ import firebase from 'firebase'
 import router from '@/router'
 import { db } from '../main'
 
+const dbName = 'Finished_Order'
 
 export const actions = {
   userSignUp ({commit}, payload) {
@@ -51,12 +52,25 @@ export const actions = {
   },
   updatePrintStatus({commit}, payload) {
     payload.forEach(element => {
-      db.collection('Finished_Order').doc(element.id)
+      db.collection(dbName).doc(element.id)
       .update({
         printStatus: true
       })
     })
     commit('setProductInStock', payload)
     router.push('/finished')
-  }
+  },
+  deleteOrder({commit}, payload) {
+    payload.forEach(element => {
+      db.collection(dbName).doc(element.id).delete()
+      .then(function() {
+        // eslint-disable-next-line
+        console.log('Document successfully deleted!')
+      }).catch(function(error) {
+        // eslint-disable-next-line
+        console.error('Error removing document: ', error)
+      })
+    })
+    commit('setBarcodePrintLists', payload)
+  },
 }

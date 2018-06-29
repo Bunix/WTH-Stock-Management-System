@@ -15,6 +15,9 @@
       <!-- <v-btn color="primary" @click.native="addOrder">Add Order</v-btn> -->
       <v-btn color="primary"  @click.native="generateBarcode">Get Order Barcode</v-btn>
       <v-btn @click.native="addOrder">Add New Order</v-btn>
+      <v-btn icon class="mx-0" @click="deleteOrder">
+        <v-icon color="red">delete</v-icon>
+      </v-btn>
     </div>
 
     <v-spacer></v-spacer>
@@ -64,9 +67,9 @@
   </v-card>
 </template>
 <script>
+
 import { db } from '../main'
-// import jsbarcode from 'jsbarcode'
-// const uuidv1 = require('uuid/v1')
+const uuidv1 = require('uuid/v1')
 
 export default {
   data() {
@@ -116,7 +119,6 @@ export default {
       }
 
     },
-
     addOrder() {
       db.collection('Finished_Order').add({ 
         basicInformation: {
@@ -156,7 +158,8 @@ export default {
         trackingNumber: '',
         barcodeQuantity: 0,
         printStatus: false,
-        shelf: ''
+        shelf: '',
+        key: uuidv1()
       })
     },
     getDate(timeObj) {
@@ -173,6 +176,12 @@ export default {
       // eslint-disable-next-line
       // console.log(this.selected)
       this.$store.dispatch('printBarcode', this.selected)
+    },
+    deleteOrder() {
+      let confirmDelete = confirm('Are you sure you want to delete this item?');
+      if (confirmDelete) {
+        this.$store.dispatch('deleteOrder', this.selected)
+      }
     }
   },
   computed: {
