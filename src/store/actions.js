@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import router from '@/router'
+import { db } from '../main'
 
 
 export const actions = {
@@ -46,11 +47,16 @@ export const actions = {
   },
   printBarcode({commit}, payload) {
     commit('setBarcodePrintLists', payload)
-    // eslint-disable-next-line
-    // console.log(payload)
     router.push('/print')
   },
-  updateOrderData({commit}, payload) {
-    commit('updateFirebaseData', payload)
+  updatePrintStatus({commit}, payload) {
+    payload.forEach(element => {
+      db.collection('Finished_Order').doc(element.id)
+      .update({
+        printStatus: true
+      })
+    })
+    commit('setProductInStock', payload)
+    router.push('/finished')
   }
 }

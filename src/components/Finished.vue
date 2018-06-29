@@ -14,7 +14,7 @@
     <div class="menu-grp">
       <!-- <v-btn color="primary" @click.native="addOrder">Add Order</v-btn> -->
       <v-btn color="primary"  @click.native="generateBarcode">Get Order Barcode</v-btn>
-      <v-btn @click.native="setProductInStock">Add to Stock</v-btn>
+      <v-btn @click.native="addOrder">Add New Order</v-btn>
     </div>
 
     <v-spacer></v-spacer>

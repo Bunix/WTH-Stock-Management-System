@@ -1,6 +1,7 @@
 <template>
   <v-card class="sticker-paper">
     <div class="menu-grp">
+      <v-btn color="primary" @click.native="print('printAndUpdate')">Print & Update stock</v-btn>
       <v-btn color="primary" @click.native="print">Print</v-btn>
     </div>
 
@@ -47,7 +48,7 @@ export default {
   },
   methods: {
     // Render data as image and attach to new window then call print function
-    print() {
+    print(printOption) {
       /* eslint-disable */
       console.log(this.barcodeLists)
       html2canvas(document.querySelector('#barcode-paper'), {
@@ -62,6 +63,10 @@ export default {
         myWindow.print()
         myWindow.close()
       })
+      // console.log(printOption)
+      if(printOption === 'printAndUpdate') {
+        this.$store.dispatch('updatePrintStatus', this.barcodeLists)
+      }
     }
   },
   mounted() {
