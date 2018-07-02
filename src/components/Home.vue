@@ -16,9 +16,6 @@
 
     <div class="menu-grp">
       <v-toolbar flat color="white">
-        <v-btn color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
-        <v-spacer></v-spacer>
-
         <v-tooltip bottom>
           <span slot="activator">
             <v-btn icon class="mx-0" @click.native="addOrder">
@@ -27,10 +24,8 @@
           </span>
           <span>Add New Order</span>
         </v-tooltip>
-
-        <v-btn :class="fav ? 'red--text' : ''" icon @click="fav = !fav">
-          <v-icon>favorite</v-icon>
-        </v-btn>
+        <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
+        <v-spacer></v-spacer>
 
         <v-tooltip bottom>
           <span slot="activator">
@@ -78,13 +73,13 @@
         <td>{{ props.item.basicInformation.orderNumber }}</td>
         <td>{{ props.item.orderQuantity }}</td>
         <td v-if="props.item.printStatus === true">
-          <v-btn icon @click="toggleStatus('printSatus', props.item)" class="green--text">
+          <v-btn icon @click="toggleStatus(props.item)" class="green--text">
             <v-icon>done</v-icon>
           </v-btn>
         </td>
         <td v-else>
           <!-- <i @click="toggleStatus('printSatus', props.item)" class="material-icons font-red">clear</i> -->
-          <v-btn icon @click="toggleStatus('printSatus', props.item)" class="red--text">
+          <v-btn icon @click="toggleStatus(props.item)" class="red--text">
             <v-icon>clear</v-icon>
           </v-btn>
         </td>
@@ -217,20 +212,8 @@ export default {
         this.$store.dispatch('deleteOrder', this.selected)
       }
     },
-    toggleStatus(status, propsItem) {
-      /* eslint-disable */
-      // console.log(status)
-      // status = !status
-      
-
-      /* eslint-disable */
-      // console.log(this.selected)
-      // console.log(this.finishedOrderLocal[1].printStatus)
-      // propsItem.toggleStatus = status
-      // console.log(propsItem)
-      // console.log(status)
+    toggleStatus(propsItem) {
       this.$store.dispatch('togglePrintStatus', [propsItem])
-      // return !status
     }
   },
   computed: {
@@ -258,7 +241,7 @@ export default {
 
 <style>
   .menu-grp {
-    padding: 0 1rem;
+    /* padding: 0 1rem; */
   }
 
   .font-red {

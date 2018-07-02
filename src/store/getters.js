@@ -18,5 +18,8 @@ export const getters = {
     // eslint-disable-next-line
     // console.log(state)
     return state.barcodePrintLists
+  },
+  getStockLists(state) {
+    return state.inStockLists
   }
 }

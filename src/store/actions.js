@@ -25,7 +25,7 @@ export const actions = {
         commit('setUser', firebaseUser)
         commit('setLoading', false)
         commit('setError', null)
-        router.push('/finished')
+        router.push('/')
       })
       .catch(error => {
         commit('setError', error.message)
@@ -44,21 +44,21 @@ export const actions = {
     router.push('/login')
   },
   returnHome() {
-    router.push('/finished')
+    router.push('/')
   },
   printBarcode({commit}, payload) {
     commit('setBarcodePrintLists', payload)
     router.push('/print')
   },
-  updatePrintStatus({commit}, payload) {
+  printAndUpdateStock({commit}, payload) {
     payload.forEach(element => {
       db.collection(dbName).doc(element.id)
       .update({
         printStatus: true
       })
     })
-    commit('setProductInStock', payload)
-    router.push('/finished')
+    commit('setProductToStock', payload)
+    router.push('/')
   },
   deleteOrder({commit}, payload) {
     payload.forEach(element => {
@@ -76,11 +76,8 @@ export const actions = {
   togglePrintStatus({commit}, payload) {
     payload.forEach(element => {
       /* eslint-disable */
-      // console.log(element.id)
-      // console.log(element.toggleStatus)
       console.log(commit)
-      // console.log(status)
-      // let key = element.toggleStatus
+
       db.collection(dbName).doc(element.id)
       .update({
         printStatus: !element.printStatus,

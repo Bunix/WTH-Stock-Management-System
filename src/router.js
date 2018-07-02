@@ -7,6 +7,10 @@ Vue.use(Router)
 
 const routerOptions = [
   {
+    path: '/',
+    component: 'Home'
+  },
+  {
     path: '/signup',
     component: 'SignUp'
   },
@@ -17,10 +21,6 @@ const routerOptions = [
   {
     path: '/login',
     component: 'Login'
-  },
-  {
-    path: '/finished',
-    component: 'Finished'
   },
   {
     path: '/print',

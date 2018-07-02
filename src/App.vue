@@ -143,10 +143,10 @@ export default {
     dialog: false,
     drawer: null,
     items: [
-      { icon: 'dashboard', text: 'Order dashboard', link: '/finished' },
+      { icon: 'dashboard', text: 'Order dashboard', link: '/' },
       { icon: 'store', text: 'In Stock', link: '/instock' },
       { icon: 'history', text: 'History Order', link: '/history' },
-      { icon: 'print', text: 'Print Barcode', link: '/print_barcode' }
+      { icon: 'print', text: 'Print Barcode', link: '/print' }
     ]
   }),
   computed: {

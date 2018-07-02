@@ -10,5 +10,11 @@ export const mutations = {
   },
   setBarcodePrintLists(state, payload) {
     state.barcodePrintLists = payload
+  },
+  setProductToStock(state, payload) {
+    // state.barcodePrintLists = payload
+    /* eslint-disable */
+    console.log(payload)
+    state.inStockLists = payload
   }
 }

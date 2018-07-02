@@ -1,8 +1,8 @@
 <template>
   <v-card class="sticker-paper">
     <div class="menu-grp">
-      <v-btn color="primary" @click.native="print('printAndUpdate')">Print & Update stock</v-btn>
-      <v-btn color="primary" @click.native="print">Print</v-btn>
+      <v-btn color="primary" @click.native="print('printAndUpdateStock')">Print & Update stock</v-btn>
+      <v-btn @click.native="print">Print</v-btn>
     </div>
 
     <v-spacer></v-spacer>
@@ -64,8 +64,8 @@ export default {
         myWindow.close()
       })
       // console.log(printOption)
-      if(printOption === 'printAndUpdate') {
-        this.$store.dispatch('updatePrintStatus', this.barcodeLists)
+      if(printOption === 'printAndUpdateStock') {
+        this.$store.dispatch('printAndUpdateStock', this.barcodeLists)
       }
     }
   },
