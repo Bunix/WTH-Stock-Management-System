@@ -1,6 +1,9 @@
 <template>
+
+
   <v-card class="dashboard">
-       <v-card-title>
+
+    <v-card-title>
       <v-text-field
         @keyup="searchQuery"
         v-model="search"
@@ -12,16 +15,37 @@
     </v-card-title>
 
     <div class="menu-grp">
-      <!-- <v-btn color="primary" @click.native="addOrder">Add Order</v-btn> -->
-      <v-btn color="primary"  @click.native="generateBarcode">Get Order Barcode</v-btn>
-      <v-btn @click.native="addOrder">Add New Order</v-btn>
-      <v-btn icon class="mx-0" @click="deleteOrder">
-        <v-icon color="red">delete</v-icon>
-      </v-btn>
+      <v-toolbar flat color="white">
+        <v-btn color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
+        <v-spacer></v-spacer>
+
+        <v-tooltip bottom>
+          <span slot="activator">
+            <v-btn icon class="mx-0" @click.native="addOrder">
+              <v-icon color="blue darken-2">add_circle</v-icon>
+            </v-btn>
+          </span>
+          <span>Add New Order</span>
+        </v-tooltip>
+
+        <v-btn :class="fav ? 'red--text' : ''" icon @click="fav = !fav">
+          <v-icon>favorite</v-icon>
+        </v-btn>
+
+        <v-tooltip bottom>
+          <span slot="activator">
+            <v-btn v-if="selected.length > 0" icon class="mx-0" @click="deleteOrder">
+              <v-icon color="red">delete</v-icon>
+            </v-btn>
+          </span>
+          <span>Delete</span>
+        </v-tooltip>
+
+      </v-toolbar>
     </div>
 
     <v-spacer></v-spacer>
-    
+
     <v-data-table
       :headers="headers"
       :items="orderingList"
@@ -53,8 +77,17 @@
         </td>
         <td>{{ props.item.basicInformation.orderNumber }}</td>
         <td>{{ props.item.orderQuantity }}</td>
-        <td v-if="props.item.printStatus === true"><i class="material-icons font-green">done</i></td>
-        <td v-else><i class="material-icons font-red">clear</i></td>
+        <td v-if="props.item.printStatus === true">
+          <v-btn icon @click="toggleStatus('printSatus', props.item)" class="green--text">
+            <v-icon>done</v-icon>
+          </v-btn>
+        </td>
+        <td v-else>
+          <!-- <i @click="toggleStatus('printSatus', props.item)" class="material-icons font-red">clear</i> -->
+          <v-btn icon @click="toggleStatus('printSatus', props.item)" class="red--text">
+            <v-icon>clear</v-icon>
+          </v-btn>
+        </td>
         <td>{{ props.item.customerInformation.name }}</td>
         <td>{{ props.item.basicInformation.orderDate }}</td>
         <td v-if="props.item.shipedDate === ''">-</td>
@@ -75,6 +108,7 @@ export default {
   data() {
     return {
       // isFilter: false,
+      fav: true,
       selected: [],
       search: '',
       tblLoading: true,
@@ -182,6 +216,21 @@ export default {
       if (confirmDelete) {
         this.$store.dispatch('deleteOrder', this.selected)
       }
+    },
+    toggleStatus(status, propsItem) {
+      /* eslint-disable */
+      // console.log(status)
+      // status = !status
+      
+
+      /* eslint-disable */
+      // console.log(this.selected)
+      // console.log(this.finishedOrderLocal[1].printStatus)
+      // propsItem.toggleStatus = status
+      // console.log(propsItem)
+      // console.log(status)
+      this.$store.dispatch('togglePrintStatus', [propsItem])
+      // return !status
     }
   },
   computed: {
@@ -208,6 +257,10 @@ export default {
 </script>
 
 <style>
+  .menu-grp {
+    padding: 0 1rem;
+  }
+
   .font-red {
     color: rgb(230, 49, 49)
   }

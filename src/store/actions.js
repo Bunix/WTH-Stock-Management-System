@@ -73,4 +73,18 @@ export const actions = {
     })
     commit('setBarcodePrintLists', payload)
   },
+  togglePrintStatus({commit}, payload) {
+    payload.forEach(element => {
+      /* eslint-disable */
+      // console.log(element.id)
+      // console.log(element.toggleStatus)
+      console.log(commit)
+      // console.log(status)
+      // let key = element.toggleStatus
+      db.collection(dbName).doc(element.id)
+      .update({
+        printStatus: !element.printStatus,
+      })
+    })
+  }
 }
