@@ -23,6 +23,10 @@ const routerOptions = [
     component: 'Login'
   },
   {
+    path: '/instock',
+    component: 'InStock'
+  },
+  {
     path: '/print',
     component: 'PrintBarcode'
     // beforeRouteEnter: checkBarcode

@@ -1,8 +1,5 @@
 <template>
-
-
   <v-card class="dashboard">
-
     <v-card-title>
       <v-text-field
         @keyup="searchQuery"
@@ -115,7 +112,6 @@ export default {
         { text: 'Order Code', value: 'basicInformation.orderNumber' },
         { text: 'Product QTY', value: 'Product & Barcode Quatity' },
         { text: 'Has Barcode', value: 'Print Status' },
-        { text: 'In Stock', value: 'In Stock' },
         { text: 'Customer', value: 'customerInformation.name' },
         { text: 'Order Date', value: 'basicInformation.orderDate' },
         { text: 'Shiped Date', value: 'Shipped Date' },

@@ -110,7 +110,7 @@ export const actions = {
     }
 
     // Set instock product to state.
-    commit('setProductToStock', payload)
+    commit()
     router.push('/')
   },
   deleteOrder({commit}, payload) {
@@ -129,12 +129,29 @@ export const actions = {
   togglePrintStatus({commit}, payload) {
     payload.forEach(element => {
       /* eslint-disable */
-      console.log(commit)
+      // console.log(commit)
 
       db.collection(dbName).doc(element.id)
       .update({
         printStatus: !element.printStatus,
       })
+    })
+    commit()
+  },
+  inStockProduct({commit}) {
+    const stockDb = db.collection('In_Stock_Products')
+    let inStockProducts = []
+    stockDb.get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        inStockProducts.push({
+          sku: doc.id,
+          detail: doc.data()
+        })
+      })
+      console.log('setProductToStock')
+      // console.log(inStockProducts)
+      commit('setProductToStock', inStockProducts)
     })
   }
 }

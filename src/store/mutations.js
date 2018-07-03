@@ -15,6 +15,6 @@ export const mutations = {
     // state.barcodePrintLists = payload
     /* eslint-disable */
     // console.log(payload)
-    state.inStockLists = payload
+    state.inStockProductLists = payload
   }
 }
