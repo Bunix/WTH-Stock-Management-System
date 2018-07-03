@@ -50,7 +50,7 @@ export default {
     // Render data as image and attach to new window then call print function
     print(printOption) {
       /* eslint-disable */
-      console.log(this.barcodeLists)
+      // console.log('print:' + this.barcodeLists)
       html2canvas(document.querySelector('#barcode-paper'), {
         dpi: 150,
         width: 1240,
@@ -65,6 +65,7 @@ export default {
       })
       // console.log(printOption)
       if(printOption === 'printAndUpdateStock') {
+        // console.log('printAndUpdateStock')
         this.$store.dispatch('printAndUpdateStock', this.barcodeLists)
       }
     }

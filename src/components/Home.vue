@@ -78,11 +78,11 @@
           </v-btn>
         </td>
         <td v-else>
-          <!-- <i @click="toggleStatus('printSatus', props.item)" class="material-icons font-red">clear</i> -->
           <v-btn icon @click="toggleStatus(props.item)" class="red--text">
             <v-icon>clear</v-icon>
           </v-btn>
         </td>
+
         <td>{{ props.item.customerInformation.name }}</td>
         <td>{{ props.item.basicInformation.orderDate }}</td>
         <td v-if="props.item.shipedDate === ''">-</td>
@@ -115,6 +115,7 @@ export default {
         { text: 'Order Code', value: 'basicInformation.orderNumber' },
         { text: 'Product QTY', value: 'Product & Barcode Quatity' },
         { text: 'Has Barcode', value: 'Print Status' },
+        { text: 'In Stock', value: 'In Stock' },
         { text: 'Customer', value: 'customerInformation.name' },
         { text: 'Order Date', value: 'basicInformation.orderDate' },
         { text: 'Shiped Date', value: 'Shipped Date' },

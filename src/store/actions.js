@@ -51,12 +51,65 @@ export const actions = {
     router.push('/print')
   },
   printAndUpdateStock({commit}, payload) {
+    
+    let products = {}
+    
     payload.forEach(element => {
+      /* eslint-disable */
+      let skuLists = Object.keys(element.checkOutInformation)
+
+      skuLists.forEach((sku) => {
+        if(products[sku] === undefined) {
+          products[sku] = {
+            name: element['checkOutInformation'][sku].name,
+            point: element['checkOutInformation'][sku].point,
+            price: element['checkOutInformation'][sku].price,
+            quantity: element['checkOutInformation'][sku].quantity
+          }
+        } else {
+          products[sku].quantity += element['checkOutInformation'][sku].quantity
+        }
+      })
+
       db.collection(dbName).doc(element.id)
       .update({
-        printStatus: true
+        printStatus: true,
+        inStock: true
+      }).then(() => {
+        console.log('Update finised')
+      }).catch(function(error) {
+        console.error('Error writing document: ', error);
       })
     })
+
+    for(let key in products) {
+      console.log(key)
+      let docRef = db.collection('In_Stock_Products').doc(key)
+      docRef.get().then(function(doc) {
+        if(doc.exists) {
+          console.log('Document data:', doc.data())
+          db.collection('In_Stock_Products').doc(key)
+          .update({
+            quantity: products[key].quantity + doc.data().quantity
+          })
+        } else {
+          db.collection('In_Stock_Products').doc(key).set({
+            name: products[key].name,
+            point: products[key].point,
+            price: products[key].price,
+            quantity: products[key].quantity + doc.data().quantity
+          })
+          .then(function() {
+            console.log('Document successfully written!');
+          })
+          .catch(function(error) {
+            console.error('Error writing document: ', error);
+          })
+        }
+      })
+    }
+
+    // Set instock product to state.
     commit('setProductToStock', payload)
     router.push('/')
   },
