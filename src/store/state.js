@@ -4,5 +4,5 @@ export const state = {
   error: null,
   loading: false,
   barcodePrintLists: null,
-  inStockProductLists: null
+  inStockProductLists: []
 }
