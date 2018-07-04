@@ -1,6 +1,7 @@
 import firebase from 'firebase'
 import router from '@/router'
-import { db } from '../main'
+// import { db } from '../main'
+import db from '../firebaseInit'
 
 const dbName = 'Finished_Order'
 const stockDb = 'In_Stock_Products'
@@ -129,7 +130,7 @@ export const actions = {
   },
   deleteProducts({commit}, payload) {
     payload.forEach(element => {
-      db.collection(stockDb).doc(element.sku).delete()
+      db.collection(stockDb).doc(element.id).delete()
       .then(function() {
         // eslint-disable-next-line
         console.log('Document successfully deleted!')
@@ -138,8 +139,6 @@ export const actions = {
         console.error('Error removing document: ', error)
       })
     })
-    // commit('setBarcodePrintLists', payload)
-    // commit('setProductToStock', payload)
   },
   togglePrintStatus({commit}, payload) {
     payload.forEach(element => {

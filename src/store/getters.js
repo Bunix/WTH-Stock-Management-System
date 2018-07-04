@@ -24,8 +24,14 @@ export const getters = {
   },
   getInStockProductLists(state) {
     /* eslint-disable */
-    // console.log('get stock')
-    // console.log(state.inStockProductLists)
     return state.inStockProductLists
+  },
+  getDbHome(state) {
+    /* eslint-disable */
+    return state.getDbHome
+  },
+  getDbStock(state) {
+    /* eslint-disable */
+    return state.getDbStock
   }
 }

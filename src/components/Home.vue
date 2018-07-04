@@ -93,7 +93,9 @@
 </template>
 <script>
 
-import { db } from '../main'
+// import { db } from '../main'
+// import { db } from '../firebaseInit'
+import db from '../firebaseInit'
 const uuidv1 = require('uuid/v1')
 
 export default {

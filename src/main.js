@@ -9,16 +9,20 @@ import 'vuetify/dist/vuetify.min.css'
 import VueFire from 'vuefire'
 import 'firebase/firestore'
 import firebase from 'firebase'
-import { firebaseConfig } from './config'
+// import { firebaseConfig } from './config'
 
 
 Vue.use(Vuetify)
 Vue.use(VueFire)
-firebase.initializeApp(firebaseConfig)
+// firebase.initializeApp(firebaseConfig)
 
-export const db = firebase.firestore()
-const settings = {/* your settings... */ timestampsInSnapshots: true};
-db.settings(settings);
+// export const db = firebase.firestore()
+// export const dbStock = 'sd'
+// const settings = {/* your settings... */ timestampsInSnapshots: true};
+// db.settings(settings);
+const firestore = firebase.firestore()
+const settings = {/* your settings... */ timestampsInSnapshots: true}
+firestore.settings(settings)
 
 Vue.config.productionTip = false
 

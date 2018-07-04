@@ -41,12 +41,12 @@
 
     <v-data-table
       :headers="headers"
-      :items="stockLists"
+      :items="inStockProducts"
       select-all
       v-model="selected"
       hide-actions
       :loading="tblLoading"
-      item-key="sku"
+      item-key="id"
     >
 
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
@@ -70,11 +70,16 @@
             hide-details
           ></v-checkbox>
         </td>
-        <td>{{ props.item.sku }}</td>
+        <td>{{ props.item.id }}</td>
+        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.price }}</td>
+        <td>{{ props.item.quantity }}</td>
+        <td>{{ props.item.shelf }}</td>
+        <!-- <td>{{ props.item.sku }}</td>
         <td>{{ props.item.detail.name }}</td>
         <td>{{ props.item.detail.price }}</td>
         <td>{{ props.item.detail.quantity }}</td>
-        <td>{{ props.item.detail.shelf }}</td>
+        <td>{{ props.item.detail.shelf }}</td> -->
         <!-- <td v-if="props.item.printStatus === true">
           <v-btn icon @click="toggleStatus(props.item)" class="green--text">
             <v-icon>done</v-icon>
@@ -103,11 +108,19 @@
 
 <script>
 
+// import { db } from '../main'
+/* eslint-disable */
+// console.log(db)
+// const db = require('../main')
+import db from '../firebaseInit'
+// console.log(db)
+
 export default {
   data() {
     return {
       isFirstFetch: true,
       search: '',
+      inStockChk: this.$store.getters.getInStockProductLists,
       inStockProducts: [],
       inStockProductsTmp: [],
       tblLoading: true,
@@ -122,6 +135,11 @@ export default {
       ]
     }
   },
+  firestore () {
+    return {
+      inStockProducts: db.collection('In_Stock_Products')
+    }
+  },
   methods: {
     searchQuery() {
 
@@ -133,7 +151,7 @@ export default {
           .filter((product) => {
             return product.sku.toLowerCase().includes(this.search) || product.detail.name.toLowerCase().includes(this.search)
           })
-        console.log(searchResult)
+        // console.log(searchResult)
         this.inStockProducts = searchResult
       } else {
         // this.inStockProducts = this.inStockProductsTmp
@@ -143,8 +161,8 @@ export default {
     deleteProducts() {
       let confirmDelete = confirm('Are you sure you want to delete this item?');
       if (confirmDelete) {
+        
         this.$store.dispatch('deleteProducts', this.selected)
-        this.$store.dispatch('inStockProduct')
       }
     },
   },
@@ -152,26 +170,29 @@ export default {
     inStockProducts: function () {
       /* eslint-disable */
       // console.log('I\'m watching you')
-      // console.log(this.inStockProducts.length)
+      // console.log(this.inStockProducts)
       if(this.inStockProducts.length !== 0) {
         this.tblLoading = false
       }
     }
-  },
-  computed: {
-    stockLists() {
-      if(this.isFirstFetch) {
-        this.inStockProducts = this.$store.getters.getInStockProductLists
-        this.isFirstFetch = this.inStockProducts.length > 0 ? false : true
-      }
-      return this.inStockProducts
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.$store.dispatch('inStockProduct')
-    })
   }
+  // computed: {
+  //   stockLists() {
+  //     console.log('Refresh')
+  //     // console.log(this.$store.getters.dbHome)
+  //     this.inStockProducts = this.$store.getters.getInStockProductLists
+  //     // if(this.isFirstFetch) {
+  //     //   this.inStockProducts = this.$store.getters.getInStockProductLists
+  //     //   this.isFirstFetch = this.inStockProducts.length > 0 ? false : true
+  //     // }
+  //     return this.inStockProducts
+  //   }
+  // }
+  // beforeRouteEnter(to, from, next) {
+  //   next(vm => {
+  //     vm.$store.dispatch('inStockProduct')
+  //   })
+  // }
 }
 </script>
 
