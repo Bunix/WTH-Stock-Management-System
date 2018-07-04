@@ -3,6 +3,7 @@ import router from '@/router'
 import { db } from '../main'
 
 const dbName = 'Finished_Order'
+const stockDb = 'In_Stock_Products'
 
 export const actions = {
   userSignUp ({commit}, payload) {
@@ -97,20 +98,20 @@ export const actions = {
             name: products[key].name,
             point: products[key].point,
             price: products[key].price,
-            quantity: products[key].quantity + doc.data().quantity
+            quantity: products[key].quantity
           })
           .then(function() {
             console.log('Document successfully written!');
           })
           .catch(function(error) {
             console.error('Error writing document: ', error);
+            commit('setError', error.message)
           })
         }
       })
     }
 
     // Set instock product to state.
-    commit()
     router.push('/')
   },
   deleteOrder({commit}, payload) {
@@ -124,7 +125,21 @@ export const actions = {
         console.error('Error removing document: ', error)
       })
     })
-    commit('setBarcodePrintLists', payload)
+    // commit('setBarcodePrintLists', payload)
+  },
+  deleteProducts({commit}, payload) {
+    payload.forEach(element => {
+      db.collection(stockDb).doc(element.sku).delete()
+      .then(function() {
+        // eslint-disable-next-line
+        console.log('Document successfully deleted!')
+      }).catch(function(error) {
+        // eslint-disable-next-line
+        console.error('Error removing document: ', error)
+      })
+    })
+    // commit('setBarcodePrintLists', payload)
+    // commit('setProductToStock', payload)
   },
   togglePrintStatus({commit}, payload) {
     payload.forEach(element => {
@@ -136,7 +151,7 @@ export const actions = {
         printStatus: !element.printStatus,
       })
     })
-    commit()
+    // commit()
   },
   inStockProduct({commit}) {
     const stockDb = db.collection('In_Stock_Products')
@@ -149,7 +164,7 @@ export const actions = {
           detail: doc.data()
         })
       })
-      // console.log('setProductToStock')
+      console.log('setProductToStock')
       // console.log(inStockProducts)
       commit('setProductToStock', inStockProducts)
     })

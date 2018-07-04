@@ -12,6 +12,31 @@
       ></v-text-field>
     </v-card-title>
 
+    <div class="menu-grp">
+      <v-toolbar flat color="white">
+        <v-tooltip bottom>
+          <span slot="activator">
+            <v-btn icon class="mx-0" @click.native="addOrder">
+              <v-icon color="blue darken-2">add_circle</v-icon>
+            </v-btn>
+          </span>
+          <span>Add New Order</span>
+        </v-tooltip>
+        <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
+        <v-spacer></v-spacer>
+
+        <v-tooltip bottom>
+          <span slot="activator">
+            <v-btn v-if="selected.length > 0" icon class="mx-0" @click="deleteProducts">
+              <v-icon color="red">delete</v-icon>
+            </v-btn>
+          </span>
+          <span>Delete</span>
+        </v-tooltip>
+
+      </v-toolbar>
+    </div>
+
     <v-spacer></v-spacer>
 
     <v-data-table
@@ -21,6 +46,7 @@
       v-model="selected"
       hide-actions
       :loading="tblLoading"
+      item-key="sku"
     >
 
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
@@ -83,7 +109,7 @@ export default {
       isFirstFetch: true,
       search: '',
       inStockProducts: [],
-      inStockProductsLocal: [],
+      inStockProductsTmp: [],
       tblLoading: true,
       selected: [],
       productLists: null,
@@ -98,20 +124,29 @@ export default {
   },
   methods: {
     searchQuery() {
+
+      this.inStockProductsTmp = this.inStockProducts
+
       if(this.search !== '') {
         /* eslint-disable */
-        // this.inStockProducts.map((x) => {
-        //   console.log(x.customerInformation)
-        // })
-        this.inStockProducts = this.inStockProducts
-        .filter((product) => {
-          return product.sku.toLowerCase().includes(this.search) || product.detail.name.toLowerCase().includes(this.search)
-        })
-        // console.log(this.inStockProducts)
+        let searchResult = this.inStockProducts
+          .filter((product) => {
+            return product.sku.toLowerCase().includes(this.search) || product.detail.name.toLowerCase().includes(this.search)
+          })
+        console.log(searchResult)
+        this.inStockProducts = searchResult
       } else {
-        this.inStockProducts = this.inStockProductsLocal
+        // this.inStockProducts = this.inStockProductsTmp
+        this.isFirstFetch = true
       }
-    }
+    },
+    deleteProducts() {
+      let confirmDelete = confirm('Are you sure you want to delete this item?');
+      if (confirmDelete) {
+        this.$store.dispatch('deleteProducts', this.selected)
+        this.$store.dispatch('inStockProduct')
+      }
+    },
   },
   watch: {
     inStockProducts: function () {
@@ -127,11 +162,8 @@ export default {
     stockLists() {
       if(this.isFirstFetch) {
         this.inStockProducts = this.$store.getters.getInStockProductLists
-        this.inStockProductsLocal = this.inStockProducts
-        this.isFirstFetch = false
+        this.isFirstFetch = this.inStockProducts.length > 0 ? false : true
       }
-      // console.log('Computed')
-      // console.log(this.inStockProducts)
       return this.inStockProducts
     }
   },

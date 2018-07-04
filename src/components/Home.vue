@@ -204,9 +204,13 @@ export default {
       this.$store.dispatch('printBarcode', this.selected)
     },
     deleteOrder() {
-      let confirmDelete = confirm('Are you sure you want to delete this item?');
+      /* eslint-disable */
+      let confirmDelete = confirm('Are you sure you want to delete this item?')
+      console.log(confirmDelete)
       if (confirmDelete) {
         this.$store.dispatch('deleteOrder', this.selected)
+        // this.selected = []
+        // console.log(this.selected)
       }
     },
     toggleStatus(propsItem) {
