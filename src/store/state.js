@@ -1,5 +1,5 @@
 export const state = {
-  appName: 'Stock Management',
+  appName: ' STOCK MANAGEMENT',
   user: null,
   error: null,
   loading: false,

@@ -1,6 +1,15 @@
 <template>
   <v-card class="dashboard">
     <v-card-title>
+      <v-layout row>
+        <v-flex>
+          <h1 class="font-weight-black blue--text text--darken-4 ">TOTAL ORDER: <span class="orange--text">{{ orderingList.length }}</span></h1>
+          <v-spacer></v-spacer>
+        </v-flex>
+      </v-layout>
+    </v-card-title>
+
+    <v-card-title>
       <v-text-field
         @keyup="searchQuery"
         v-model="search"
