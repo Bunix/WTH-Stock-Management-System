@@ -237,9 +237,6 @@ export default {
 </script>
 
 <style>
-  .menu-grp {
-    /* padding: 0 1rem; */
-  }
 
   .font-red {
     color: rgb(230, 49, 49)

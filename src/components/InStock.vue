@@ -3,6 +3,8 @@
 
     <v-card-title>
       <v-text-field
+        @keyup="searchQuery"
+        v-model="search"
         append-icon="search"
         label="Search"
         single-line
@@ -42,8 +44,11 @@
             hide-details
           ></v-checkbox>
         </td>
-        <!-- <td>{{ props }}</td> -->
-        <!-- <td>{{ props.item.detail.name }}</td> -->
+        <td>{{ props.item.sku }}</td>
+        <td>{{ props.item.detail.name }}</td>
+        <td>{{ props.item.detail.price }}</td>
+        <td>{{ props.item.detail.quantity }}</td>
+        <td>{{ props.item.detail.shelf }}</td>
         <!-- <td v-if="props.item.printStatus === true">
           <v-btn icon @click="toggleStatus(props.item)" class="green--text">
             <v-icon>done</v-icon>
@@ -65,7 +70,7 @@
 
     </v-data-table>
 
-    <p>{{stockLists}}</p>
+    <!-- <p>{{stockLists}}</p> -->
 
   </v-card>
 </template>
@@ -75,6 +80,8 @@
 export default {
   data() {
     return {
+      isFirstFetch: true,
+      search: '',
       inStockProducts: [],
       inStockProductsLocal: [],
       tblLoading: true,
@@ -83,49 +90,49 @@ export default {
       headers: [
         { text: 'Product Code', value: 'Product Code' },
         { text: 'Product Name', value: 'Product Name' },
-        { text: 'Point', value: 'Point' },
         { text: 'Price', value: 'Price' },
         { text: 'Quantity', value: 'Quantity' },
         { text: 'Shelf', value: 'Shelf' }
       ]
     }
   },
-  // mounted() {
-  //   this.$nextTick(() => { // ES6 arrow function
-  //   /* eslint-disable */
-  //   console.log('mount')
-  //     this.inStockProducts = this.$store.getters.getInStockProductLists
-  //   })
-  // },
+  methods: {
+    searchQuery() {
+      if(this.search !== '') {
+        /* eslint-disable */
+        // this.inStockProducts.map((x) => {
+        //   console.log(x.customerInformation)
+        // })
+        this.inStockProducts = this.inStockProducts
+        .filter((product) => {
+          return product.sku.toLowerCase().includes(this.search) || product.detail.name.toLowerCase().includes(this.search)
+        })
+        // console.log(this.inStockProducts)
+      } else {
+        this.inStockProducts = this.inStockProductsLocal
+      }
+    }
+  },
   watch: {
     inStockProducts: function () {
       /* eslint-disable */
-      console.log('I\'m watching you')
-      console.log(this.inStockProducts.length)
+      // console.log('I\'m watching you')
+      // console.log(this.inStockProducts.length)
       if(this.inStockProducts.length !== 0) {
         this.tblLoading = false
-        // this.inStockProductsLocal = this.inStockProducts
-        // console.log(this.inStockProductsLocal)
-        // Object.keys(this.inStockProducts).forEach((sku) => {
-        //   // this.inStockProductsLocal.push(this.inStockProducts[sku])
-        //   let product = {
-        //     sku: this.inStockProducts[sku].sku,
-        //     detail: {
-        //       name: this.inStockProducts[sku].detail.name,
-        //       point: this.inStockProducts[sku].detail.point,
-        //       price: this.inStockProducts[sku].detail.price,
-        //       quantity: this.inStockProducts[sku].detail.quantity
-        //     }
-        //   }
-
-        //   this.inStockProductsLocal.push(product)
-        // })
       }
     }
   },
   computed: {
     stockLists() {
-      this.inStockProducts = this.$store.getters.getInStockProductLists
+      if(this.isFirstFetch) {
+        this.inStockProducts = this.$store.getters.getInStockProductLists
+        this.inStockProductsLocal = this.inStockProducts
+        this.isFirstFetch = false
+      }
+      // console.log('Computed')
+      // console.log(this.inStockProducts)
+      return this.inStockProducts
     }
   },
   beforeRouteEnter(to, from, next) {

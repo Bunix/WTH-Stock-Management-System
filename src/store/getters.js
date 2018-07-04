@@ -24,8 +24,8 @@ export const getters = {
   },
   getInStockProductLists(state) {
     /* eslint-disable */
-    console.log('get stock')
-    console.log(state.inStockProductLists)
+    // console.log('get stock')
+    // console.log(state.inStockProductLists)
     return state.inStockProductLists
   }
 }

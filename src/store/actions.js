@@ -149,7 +149,7 @@ export const actions = {
           detail: doc.data()
         })
       })
-      console.log('setProductToStock')
+      // console.log('setProductToStock')
       // console.log(inStockProducts)
       commit('setProductToStock', inStockProducts)
     })
