@@ -41,7 +41,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="inStockProducts"
+      :items="inStockProductsTmp"
       select-all
       v-model="selected"
       hide-actions
@@ -75,57 +75,27 @@
         <td>{{ props.item.price }}</td>
         <td>{{ props.item.quantity }}</td>
         <td>{{ props.item.shelf }}</td>
-        <!-- <td>{{ props.item.sku }}</td>
-        <td>{{ props.item.detail.name }}</td>
-        <td>{{ props.item.detail.price }}</td>
-        <td>{{ props.item.detail.quantity }}</td>
-        <td>{{ props.item.detail.shelf }}</td> -->
-        <!-- <td v-if="props.item.printStatus === true">
-          <v-btn icon @click="toggleStatus(props.item)" class="green--text">
-            <v-icon>done</v-icon>
-          </v-btn>
-        </td>
-        <td v-else>
-          <v-btn icon @click="toggleStatus(props.item)" class="red--text">
-            <v-icon>clear</v-icon>
-          </v-btn>
-        </td>
-
-        <td>{{ props.item.customerInformation.name }}</td>
-        <td>{{ props.item.basicInformation.orderDate }}</td>
-        <td v-if="props.item.shipedDate === ''">-</td>
-        <td v-else>{{ props.item.shipedDate }}</td>
-        <td v-if="props.item.shelf === ''">-</td>
-        <td v-else>{{ props.item.shelf }}</td> -->
       </template>
 
     </v-data-table>
 
-    <!-- <p>{{stockLists}}</p> -->
 
   </v-card>
 </template>
 
 <script>
 
-// import { db } from '../main'
 /* eslint-disable */
-// console.log(db)
-// const db = require('../main')
 import db from '../firebaseInit'
-// console.log(db)
 
 export default {
   data() {
     return {
-      isFirstFetch: true,
       search: '',
-      inStockChk: this.$store.getters.getInStockProductLists,
       inStockProducts: [],
       inStockProductsTmp: [],
       tblLoading: true,
       selected: [],
-      productLists: null,
       headers: [
         { text: 'Product Code', value: 'Product Code' },
         { text: 'Product Name', value: 'Product Name' },
@@ -143,56 +113,31 @@ export default {
   methods: {
     searchQuery() {
 
-      this.inStockProductsTmp = this.inStockProducts
-
       if(this.search !== '') {
         /* eslint-disable */
-        let searchResult = this.inStockProducts
+        this.inStockProductsTmp = this.inStockProducts
           .filter((product) => {
-            return product.sku.toLowerCase().includes(this.search) || product.detail.name.toLowerCase().includes(this.search)
+            return product.id.toLowerCase().includes(this.search) || product.name.toLowerCase().includes(this.search)
           })
-        // console.log(searchResult)
-        this.inStockProducts = searchResult
       } else {
-        // this.inStockProducts = this.inStockProductsTmp
-        this.isFirstFetch = true
+        this.inStockProductsTmp = this.inStockProducts
       }
     },
     deleteProducts() {
       let confirmDelete = confirm('Are you sure you want to delete this item?');
       if (confirmDelete) {
-        
         this.$store.dispatch('deleteProducts', this.selected)
       }
     },
   },
   watch: {
     inStockProducts: function () {
-      /* eslint-disable */
-      // console.log('I\'m watching you')
-      // console.log(this.inStockProducts)
       if(this.inStockProducts.length !== 0) {
         this.tblLoading = false
+        this.inStockProductsTmp = this.inStockProducts 
       }
     }
   }
-  // computed: {
-  //   stockLists() {
-  //     console.log('Refresh')
-  //     // console.log(this.$store.getters.dbHome)
-  //     this.inStockProducts = this.$store.getters.getInStockProductLists
-  //     // if(this.isFirstFetch) {
-  //     //   this.inStockProducts = this.$store.getters.getInStockProductLists
-  //     //   this.isFirstFetch = this.inStockProducts.length > 0 ? false : true
-  //     // }
-  //     return this.inStockProducts
-  //   }
-  // }
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     vm.$store.dispatch('inStockProduct')
-  //   })
-  // }
 }
 </script>
 

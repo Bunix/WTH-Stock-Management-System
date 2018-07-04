@@ -4,7 +4,7 @@ import router from '@/router'
 import db from '../firebaseInit'
 
 const dbName = 'Finished_Order'
-const stockDb = 'In_Stock_Products'
+const inStockDb = 'In_Stock_Products'
 
 export const actions = {
   userSignUp ({commit}, payload) {
@@ -111,7 +111,6 @@ export const actions = {
         }
       })
     }
-
     // Set instock product to state.
     router.push('/')
   },
@@ -126,11 +125,10 @@ export const actions = {
         console.error('Error removing document: ', error)
       })
     })
-    // commit('setBarcodePrintLists', payload)
   },
   deleteProducts({commit}, payload) {
     payload.forEach(element => {
-      db.collection(stockDb).doc(element.id).delete()
+      db.collection(inStockDb).doc(element.id).delete()
       .then(function() {
         // eslint-disable-next-line
         console.log('Document successfully deleted!')
@@ -143,29 +141,11 @@ export const actions = {
   togglePrintStatus({commit}, payload) {
     payload.forEach(element => {
       /* eslint-disable */
-      // console.log(commit)
-
       db.collection(dbName).doc(element.id)
       .update({
         printStatus: !element.printStatus,
       })
     })
     // commit()
-  },
-  inStockProduct({commit}) {
-    const stockDb = db.collection('In_Stock_Products')
-    let inStockProducts = []
-    stockDb.get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        inStockProducts.push({
-          sku: doc.id,
-          detail: doc.data()
-        })
-      })
-      console.log('setProductToStock')
-      // console.log(inStockProducts)
-      commit('setProductToStock', inStockProducts)
-    })
   }
 }
