@@ -6688,6 +6688,10 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-barcode-scanner@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/vue-barcode-scanner/-/vue-barcode-scanner-0.6.0.tgz#cc21949fe37f93d2ec229e364b9664decd711611"
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"

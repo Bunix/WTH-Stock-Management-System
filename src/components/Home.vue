@@ -22,6 +22,7 @@
           <span>Add New Order</span>
         </v-tooltip>
         <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
+        <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="checkOrder">Get Invoice</v-btn>
         <v-spacer></v-spacer>
 
         <v-tooltip bottom>
@@ -93,8 +94,6 @@
 </template>
 <script>
 
-// import { db } from '../main'
-// import { db } from '../firebaseInit'
 import db from '../firebaseInit'
 const uuidv1 = require('uuid/v1')
 
@@ -121,6 +120,14 @@ export default {
       ]
     }
   },
+  created () {
+    // Add barcode scan listener and pass the callback function
+    this.$barcodeScanner.init(this.onBarcodeScanned)
+  },
+  destroyed () {
+    // Remove listener when component is destroyed
+    this.$barcodeScanner.destroy()
+  },
   firestore () {
     return {
       finishedOrder: db.collection('Finished_Order')
@@ -135,6 +142,28 @@ export default {
     }
   },
   methods: {
+    // Create callback function to receive barcode when the scanner is already done
+    onBarcodeScanned (barcode) {
+      /* eslint-disable */
+      console.log(barcode)
+      this.finishedOrder.forEach((order, i) => {
+        if(order.basicInformation.orderNumber === barcode) {
+          console.log('Push')
+          this.selected.push(this.finishedOrder[i])
+        }
+      })
+      // do something...
+    },
+    // Reset to the last barcode before hitting enter (whatever anything in the input box)
+    resetBarcode () {
+      let barcode = this.$barcodeScanner.getPreviousCode()
+      // do something...
+    },
+    checkOrder() {
+      /* eslint-disable */
+      console.log([this.finishedOrder[0]])
+      this.selected = this.finishedOrder
+    },
     searchQuery() {
       if(this.search !== '') {
   

@@ -10,10 +10,12 @@ import VueFire from 'vuefire'
 import 'firebase/firestore'
 import firebase from 'firebase'
 // import { firebaseConfig } from './config'
+import VueBarcodeScanner from 'vue-barcode-scanner'
 
 
 Vue.use(Vuetify)
 Vue.use(VueFire)
+Vue.use(VueBarcodeScanner)
 // firebase.initializeApp(firebaseConfig)
 
 // export const db = firebase.firestore()
