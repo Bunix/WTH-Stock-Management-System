@@ -57,6 +57,7 @@
         <span>Delete</span>
       </v-tooltip>
     </v-toolbar>
+    
     <template>
       <v-alert
         v-model="isAlert"
@@ -103,10 +104,10 @@
           <td>{{ props.item.basicInformation.orderNumber }}</td>
           <td>{{ props.item.orderQuantity }}</td>
           <td v-if="props.item.printStatus === true">
-            <v-btn icon @click="toggleStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
+            <v-btn icon @click="setStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
           </td>
           <td v-else>
-            <v-btn icon @click="toggleStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
+            <v-btn icon @click="setStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
           </td>
           <td>{{ props.item.customerInformation.name }}</td>
           <td>{{ props.item.basicInformation.orderDate }}</td>
@@ -175,7 +176,7 @@ export default {
       /* eslint-disable */
       console.log(barcode)
       if(!this.isScanMode) {
-        console.log('Please active scanner mode')
+        // console.log('Please active scanner mode')
         this.isAlert = true
         return
       }
@@ -263,22 +264,19 @@ export default {
       return totalQuantity
     },
     generateBarcode() {
-      // eslint-disable-next-line
-      // console.log(this.selected)
-      this.$store.dispatch('printBarcode', this.selected)
+      this.$store.dispatch('generateBarcode', this.selected)
+    },
+    generateInvoice() {
+      this.$store.dispatch('generateInvoice', this.selected)
     },
     deleteOrder() {
-      /* eslint-disable */
       let confirmDelete = confirm('Are you sure you want to delete this item?')
-      console.log(confirmDelete)
       if (confirmDelete) {
         this.$store.dispatch('deleteOrder', this.selected)
-        // this.selected = []
-        // console.log(this.selected)
       }
     },
-    toggleStatus(propsItem) {
-      this.$store.dispatch('togglePrintStatus', [propsItem])
+    setStatus(propsItem) {
+      this.$store.dispatch('setPrintStatus', [propsItem])
     }
   },
   computed: {

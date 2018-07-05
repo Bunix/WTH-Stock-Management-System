@@ -11,6 +11,10 @@ const routerOptions = [
     component: 'Home'
   },
   {
+    path: '/printinvoice',
+    component: 'PrintInvoice'
+  },
+  {
     path: '/test',
     component: 'Test'
   },
@@ -31,7 +35,7 @@ const routerOptions = [
     component: 'InStock'
   },
   {
-    path: '/print',
+    path: '/printbarcode',
     component: 'PrintBarcode'
     // beforeRouteEnter: checkBarcode
   }

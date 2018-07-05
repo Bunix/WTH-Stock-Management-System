@@ -8,13 +8,10 @@ export const mutations = {
   setLoading(state, payload) {
     state.loading = payload
   },
-  setBarcodePrintLists(state, payload) {
-    state.barcodePrintLists = payload
+  setBarcodeLists(state, payload) {
+    state.barcodeLists = payload
   },
-  setProductToStock(state, payload) {
-    // state.barcodePrintLists = payload
-    /* eslint-disable */
-    // console.log(payload)
-    state.inStockProductLists = payload
+  setInvoiceLists(state, payload) {
+    state.invoiceLists = payload
   }
 }

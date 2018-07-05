@@ -1,4 +1,4 @@
-export const getters = {
+export const getters = {/* eslint-disable */
   appTitle(state) {
     return state.appName
   },
@@ -14,24 +14,10 @@ export const getters = {
   getLoading(state) {
     return state.loading
   },
-  getBarcodePrintLists(state) {
-    // eslint-disable-next-line
-    // console.log(state)
-    return state.barcodePrintLists
+  getBarcodeLists(state) {
+    return state.barcodeLists
   },
-  getStockLists(state) {
-    return state.inStockLists
-  },
-  getInStockProductLists(state) {
-    /* eslint-disable */
-    return state.inStockProductLists
-  },
-  getDbHome(state) {
-    /* eslint-disable */
-    return state.getDbHome
-  },
-  getDbStock(state) {
-    /* eslint-disable */
-    return state.getDbStock
+  getInvoiceLists(state) {
+    return state.invoiceLists
   }
 }

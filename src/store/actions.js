@@ -1,12 +1,13 @@
 import firebase from 'firebase'
 import router from '@/router'
-// import { db } from '../main'
 import db from '../firebaseInit'
+// import { db } from '../main'
 
-const dbName = 'Finished_Order'
+// Set database collection name
+const orderDb = 'Finished_Order'
 const inStockDb = 'In_Stock_Products'
 
-export const actions = {
+export const actions = {/* eslint-disable */
   userSignUp ({commit}, payload) {
     commit('setLoading', true)
     firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
@@ -48,16 +49,18 @@ export const actions = {
   returnHome() {
     router.push('/')
   },
-  printBarcode({commit}, payload) {
-    commit('setBarcodePrintLists', payload)
-    router.push('/print')
+  generateBarcode({commit}, payload) {
+    commit('setBarcodeLists', payload)
+    router.push('/printbarcode')
   },
-  printAndUpdateStock({commit}, payload) {
+  updateStock({commit}, payload) {
     
     let products = {}
+    const ref = db.collection(orderDb)
+    const refInstock = db.collection(inStockDb)
     
     payload.forEach(element => {
-      /* eslint-disable */
+
       let skuLists = Object.keys(element.checkOutInformation)
 
       skuLists.forEach((sku) => {
@@ -73,29 +76,35 @@ export const actions = {
         }
       })
 
-      db.collection(dbName).doc(element.id)
+      ref
+      .doc(element.id)
       .update({
         printStatus: true,
         inStock: true
       }).then(() => {
         console.log('Update finised')
-      }).catch(function(error) {
+      }).catch(error => {
         console.error('Error writing document: ', error);
       })
     })
 
+    
     for(let key in products) {
-      console.log(key)
-      let docRef = db.collection('In_Stock_Products').doc(key)
-      docRef.get().then(function(doc) {
+
+      let refInstockDoc = refInstock.doc(key)
+      
+      refInstockDoc
+      .get()
+      .then(doc => {
         if(doc.exists) {
           console.log('Document data:', doc.data())
-          db.collection('In_Stock_Products').doc(key)
+          refInstockDoc
           .update({
             quantity: products[key].quantity + doc.data().quantity
           })
         } else {
-          db.collection('In_Stock_Products').doc(key).set({
+          refInstockDoc
+          .set({
             name: products[key].name,
             point: products[key].point,
             price: products[key].price,
@@ -104,48 +113,72 @@ export const actions = {
           .then(function() {
             console.log('Document successfully written!');
           })
-          .catch(function(error) {
+          .catch(error => {
             console.error('Error writing document: ', error);
             commit('setError', error.message)
           })
         }
       })
     }
-    // Set instock product to state.
     router.push('/')
   },
+  generateInvoice() {
+    return
+  },
+  printInvoice({commit}, payload) {
+
+  },
   deleteOrder({commit}, payload) {
+
+    const ref = db.collection(orderDb)
+
     payload.forEach(element => {
-      db.collection(dbName).doc(element.id).delete()
+      ref
+      .doc(element.id)
+      .delete()
       .then(function() {
-        // eslint-disable-next-line
         console.log('Document successfully deleted!')
-      }).catch(function(error) {
-        // eslint-disable-next-line
+      }).catch(error => {
         console.error('Error removing document: ', error)
+        commit('setError', error.message)
       })
     })
   },
   deleteProducts({commit}, payload) {
+
+    const ref = db.collection(inStockDb)
+
     payload.forEach(element => {
-      db.collection(inStockDb).doc(element.id).delete()
-      .then(function() {
-        // eslint-disable-next-line
+      ref
+      .doc(element.id)
+      .delete()
+      .then(() => {
         console.log('Document successfully deleted!')
-      }).catch(function(error) {
-        // eslint-disable-next-line
+      }).catch(error => {
         console.error('Error removing document: ', error)
+        commit('setError', error.message)
       })
     })
+
   },
-  togglePrintStatus({commit}, payload) {
+  setPrintStatus({commit}, payload) {
+
+    const ref = db.collection(orderDb)
+
     payload.forEach(element => {
-      /* eslint-disable */
-      db.collection(dbName).doc(element.id)
+      ref
+      .doc(element.id)
       .update({
         printStatus: !element.printStatus,
       })
+      .then(() => {
+        console.log('Document successfully updated!')
+      })
+      .catch(error => {
+        console.error('Error update document: ', error)
+        commit('setError', error.message)
+      })
     })
-    // commit()
+
   }
 }
