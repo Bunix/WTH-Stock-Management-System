@@ -3,7 +3,9 @@
     <v-card-title>
       <v-layout row>
         <v-flex>
-          <h1 class="font-weight-black blue--text text--darken-4 ">TOTAL ORDER: <span class="orange--text">{{ orderingList.length }}</span></h1>
+          <h1 class="font-weight-black blue--text text--darken-4 ">
+            TOTAL ORDERS: <span class="orange--text">{{ orderingList.length }}</span>
+          </h1>
           <v-spacer></v-spacer>
         </v-flex>
       </v-layout>
@@ -32,11 +34,20 @@
         </span>
         <span>Add New Order</span>
       </v-tooltip>
-      <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
-      <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="checkOrder">Get Invoice</v-btn>
+      <v-tooltip bottom>
+        <span slot="activator">
+          <v-btn icon class="mx-0" @click.native="isScanMode = !isScanMode">
+            <v-icon :class="{'grey--text': !isScanMode, 'green--text': isScanMode}">center_focus_strong</v-icon>
+          </v-btn>
+        </span>
+        <span v-if="isScanMode">Deactive Scan Mode</span>
+        <span v-else>Active Scan Mode</span>
+      </v-tooltip>
       
       <v-spacer></v-spacer>
 
+      <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
+      <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="checkOrder">Get Invoice</v-btn>
       <v-tooltip bottom>
         <span slot="activator">
           <v-btn v-if="selected.length > 0" icon class="mx-0" @click="deleteOrder">
@@ -46,6 +57,15 @@
         <span>Delete</span>
       </v-tooltip>
     </v-toolbar>
+    <template>
+      <v-alert
+        v-model="isAlert"
+        dismissible
+        type="warning"
+      >
+        Please active scanner mode before use barcode scanner
+      </v-alert>
+    </template>
     <!-- ./ Menu Group -->
 
     <v-spacer></v-spacer>
@@ -83,16 +103,11 @@
           <td>{{ props.item.basicInformation.orderNumber }}</td>
           <td>{{ props.item.orderQuantity }}</td>
           <td v-if="props.item.printStatus === true">
-            <v-btn icon @click="toggleStatus(props.item)" class="green--text">
-              <v-icon>done</v-icon>
-            </v-btn>
+            <v-btn icon @click="toggleStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
           </td>
           <td v-else>
-            <v-btn icon @click="toggleStatus(props.item)" class="red--text">
-              <v-icon>clear</v-icon>
-            </v-btn>
+            <v-btn icon @click="toggleStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
           </td>
-
           <td>{{ props.item.customerInformation.name }}</td>
           <td>{{ props.item.basicInformation.orderDate }}</td>
           <td v-if="props.item.shipedDate === ''">-</td>
@@ -113,6 +128,9 @@ const uuidv1 = require('uuid/v1')
 export default {
   data: () => ({
     // isFilter: false,
+    isScanMode: false,
+    isAlert: false,
+    toggle_exclusive: 0,
     selected: [],
     search: '',
     tblLoading: true,
@@ -156,13 +174,18 @@ export default {
     onBarcodeScanned (barcode) {
       /* eslint-disable */
       console.log(barcode)
+      if(!this.isScanMode) {
+        console.log('Please active scanner mode')
+        this.isAlert = true
+        return
+      }
+
       this.orderLists.forEach((order, i) => {
         if(order.basicInformation.orderNumber === barcode) {
           console.log('Push')
           this.selected.push(this.orderLists[i])
         }
       })
-      // do something...
     },
     // Reset to the last barcode before hitting enter (whatever anything in the input box)
     resetBarcode () {
@@ -281,6 +304,10 @@ export default {
 </script>
 
 <style>
+  .icon.scanMode {
+    color: #00C853 !important;
+  }
+
   .font-red {
     color: rgb(230, 49, 49)
   }

@@ -1,5 +1,16 @@
 <template>
   <v-card class="dashboard">
+    <v-card-title>
+      <v-layout row>
+        <v-flex>
+          <h1 class="font-weight-black blue--text text--darken-4 ">
+            PRODUCTS QTY: <span class="orange--text">{{ inStockProductsTmp.length }}</span>
+          </h1>
+          <v-spacer></v-spacer>
+        </v-flex>
+      </v-layout>
+    </v-card-title>
+    <!-- ./ Summary Overview -->
 
     <v-card-title>
       <v-text-field
@@ -11,6 +22,7 @@
         hide-details
       ></v-text-field>
     </v-card-title>
+    
 
     <div class="menu-grp">
       <v-toolbar flat color="white">
@@ -89,22 +101,20 @@
 import db from '../firebaseInit'
 
 export default {
-  data() {
-    return {
-      search: '',
-      inStockProducts: [],
-      inStockProductsTmp: [],
-      tblLoading: true,
-      selected: [],
-      headers: [
-        { text: 'Product Code', value: 'Product Code' },
-        { text: 'Product Name', value: 'Product Name' },
-        { text: 'Price', value: 'Price' },
-        { text: 'Quantity', value: 'Quantity' },
-        { text: 'Shelf', value: 'Shelf' }
-      ]
-    }
-  },
+  data: () => ({
+    search: '',
+    inStockProducts: [],
+    inStockProductsTmp: [],
+    tblLoading: true,
+    selected: [],
+    headers: [
+      { text: 'Product Code', value: 'Product Code' },
+      { text: 'Product Name', value: 'Product Name' },
+      { text: 'Price', value: 'Price' },
+      { text: 'Quantity', value: 'Quantity' },
+      { text: 'Shelf', value: 'Shelf' }
+    ]
+  }),
   firestore () {
     return {
       inStockProducts: db.collection('In_Stock_Products')
@@ -112,7 +122,6 @@ export default {
   },
   methods: {
     searchQuery() {
-
       if(this.search !== '') {
         /* eslint-disable */
         this.inStockProductsTmp = this.inStockProducts
