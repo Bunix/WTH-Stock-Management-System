@@ -1,15 +1,22 @@
 <template>
   <v-card class="dashboard">
-    <v-card-title>
-      <v-layout row>
-        <v-flex>
-          <h1 class="font-weight-black blue--text text--darken-4 ">
-            TOTAL ORDERS: <span class="orange--text">{{ orderingList.length }}</span>
-          </h1>
+
+      <v-toolbar color="white" flat>
+
+          <v-toolbar-title class="font-weight-black blue--text text--darken-4">
+            <h1 class="font-weight-black">TOTAL ORDERS: <span class="orange--text">{{ orderingList.length }}</span></h1>
+          </v-toolbar-title>
+
           <v-spacer></v-spacer>
-        </v-flex>
-      </v-layout>
-    </v-card-title>
+
+          <v-toolbar-title class="grey--text text--darken-2" style="background-color: #fbfbfb; border: 1px solid #eee; padding: 0.5rem 2rem; border-radius: 4px;">
+            Scanner Mode: 
+            <span v-if="isScanMode" class="green--text"> ON </span>
+            <span v-else class="red--text"> OFF </span>
+          </v-toolbar-title>
+
+      </v-toolbar>
+
     <!-- ./ Summary Overview -->
 
     <v-card-title>
@@ -47,7 +54,7 @@
       <v-spacer></v-spacer>
 
       <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
-      <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="checkOrder">Get Invoice</v-btn>
+      <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="generateInvoice">Get Invoice</v-btn>
       <v-tooltip bottom>
         <span slot="activator">
           <v-btn v-if="selected.length > 0" icon class="mx-0" @click="deleteOrder">
@@ -109,7 +116,7 @@
           <td v-else>
             <v-btn icon @click="setStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
           </td>
-          <td>{{ props.item.customerInformation.name }}</td>
+          <td>{{ trimName(props.item.customerInformation.name) }}</td>
           <td>{{ props.item.basicInformation.orderDate }}</td>
           <td v-if="props.item.shipedDate === ''">-</td>
           <td v-else>{{ props.item.shipedDate }}</td>
@@ -146,6 +153,7 @@ export default {
       { text: 'Customer', value: 'customerInformation.name' },
       { text: 'Order Date', value: 'basicInformation.orderDate' },
       { text: 'Shiped Date', value: 'shipedDate' },
+      { text: 'Paid Date', value: 'paidDate' },
       { text: 'Shelf', value: 'shelf' }
     ]
   }),
@@ -192,11 +200,6 @@ export default {
     resetBarcode () {
       let barcode = this.$barcodeScanner.getPreviousCode()
       // do something...
-    },
-    checkOrder() {
-      /* eslint-disable */
-      console.log([this.orderLists[0]])
-      this.selected = this.orderLists
     },
     searchQuery() {
       if(this.search !== '') {
@@ -277,6 +280,9 @@ export default {
     },
     setStatus(propsItem) {
       this.$store.dispatch('setPrintStatus', [propsItem])
+    },
+    trimName(name) {
+      return `${name.slice(0, 9)}...`
     }
   },
   computed: {

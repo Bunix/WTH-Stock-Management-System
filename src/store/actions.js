@@ -51,7 +51,7 @@ export const actions = {/* eslint-disable */
   },
   generateBarcode({commit}, payload) {
     commit('setBarcodeLists', payload)
-    router.push('/printbarcode')
+    router.push('/barcode')
   },
   updateStock({commit}, payload) {
     
@@ -122,11 +122,18 @@ export const actions = {/* eslint-disable */
     }
     router.push('/')
   },
-  generateInvoice() {
-    return
+  generateInvoice({commit}, payload) {
+    // console.log(payload)
+    let invoiceLists = []
+    payload.forEach( order => {
+      invoiceLists.push(order)
+    })
+    // console.log(invoiceLists)
+    commit('setInvoiceLists', invoiceLists)
+    router.push('/invoice')
   },
-  printInvoice({commit}, payload) {
-
+  printInvoice() {
+    return
   },
   deleteOrder({commit}, payload) {
 

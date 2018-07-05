@@ -11,12 +11,12 @@ const routerOptions = [
     component: 'Home'
   },
   {
-    path: '/printinvoice',
-    component: 'PrintInvoice'
+    path: '/invoice',
+    component: 'Invoice'
   },
   {
-    path: '/test',
-    component: 'Test'
+    path: '/getdata',
+    component: 'GetData'
   },
   {
     path: '/signup',
@@ -35,8 +35,8 @@ const routerOptions = [
     component: 'InStock'
   },
   {
-    path: '/printbarcode',
-    component: 'PrintBarcode'
+    path: '/barcode',
+    component: 'Barcode'
     // beforeRouteEnter: checkBarcode
   }
 ]

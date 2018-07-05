@@ -11,11 +11,13 @@ import 'firebase/firestore'
 import firebase from 'firebase'
 // import { firebaseConfig } from './config'
 import VueBarcodeScanner from 'vue-barcode-scanner'
-
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 Vue.use(Vuetify)
 Vue.use(VueFire)
 Vue.use(VueBarcodeScanner)
+Vue.use(VueAxios, axios)
 // firebase.initializeApp(firebaseConfig)
 
 // export const db = firebase.firestore()

@@ -145,8 +145,8 @@ export default {
       { icon: 'dashboard', text: 'Order dashboard', link: '/' },
       { icon: 'store', text: 'In Stock', link: '/instock' },
       { icon: 'history', text: 'History Order', link: '/history' },
-      { icon: 'insert_chart_outlined', text: 'Barcode', link: '/printbarcode' },
-      { icon: 'description', text: 'Invoice', link: '/printinvoice' }
+      { icon: 'insert_chart_outlined', text: 'Barcode', link: '/barcode' },
+      { icon: 'description', text: 'Invoice', link: '/invoice' }
     ]
   }),
   computed: {
