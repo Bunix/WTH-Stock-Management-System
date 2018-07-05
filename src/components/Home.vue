@@ -8,6 +8,7 @@
         </v-flex>
       </v-layout>
     </v-card-title>
+    <!-- ./ Summary Overview -->
 
     <v-card-title>
       <v-text-field
@@ -19,86 +20,89 @@
         hide-details
       ></v-text-field>
     </v-card-title>
+    <!-- ./ Search bar -->
 
-    <div class="menu-grp">
-      <v-toolbar flat color="white">
-        <v-tooltip bottom>
-          <span slot="activator">
-            <v-btn icon class="mx-0" @click.native="addOrder">
-              <v-icon color="blue darken-2">add_circle</v-icon>
-            </v-btn>
-          </span>
-          <span>Add New Order</span>
-        </v-tooltip>
-        <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
-        <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="checkOrder">Get Invoice</v-btn>
-        <v-spacer></v-spacer>
 
-        <v-tooltip bottom>
-          <span slot="activator">
-            <v-btn v-if="selected.length > 0" icon class="mx-0" @click="deleteOrder">
-              <v-icon color="red">delete</v-icon>
-            </v-btn>
-          </span>
-          <span>Delete</span>
-        </v-tooltip>
+    <v-toolbar flat color="white">
+      <v-tooltip bottom>
+        <span slot="activator">
+          <v-btn icon class="mx-0" @click.native="addOrder">
+            <v-icon color="blue darken-2">add_circle</v-icon>
+          </v-btn>
+        </span>
+        <span>Add New Order</span>
+      </v-tooltip>
+      <v-btn v-if="selected.length > 0" color="primary" @click.native="generateBarcode">Get Order Barcode</v-btn>
+      <v-btn v-if="selected.length > 0" dark color="pink darken-2" @click.native="checkOrder">Get Invoice</v-btn>
+      
+      <v-spacer></v-spacer>
 
-      </v-toolbar>
-    </div>
+      <v-tooltip bottom>
+        <span slot="activator">
+          <v-btn v-if="selected.length > 0" icon class="mx-0" @click="deleteOrder">
+            <v-icon color="red">delete</v-icon>
+          </v-btn>
+        </span>
+        <span>Delete</span>
+      </v-tooltip>
+    </v-toolbar>
+    <!-- ./ Menu Group -->
 
     <v-spacer></v-spacer>
 
-    <v-data-table
-      :headers="headers"
-      :items="orderingList"
-      select-all
-      v-model="selected"
-      hide-actions
-      :loading="tblLoading"
-      item-key="key"
-      :search="search"
-    >
-      <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
-      <template slot="headerCell" slot-scope="props">
-        <v-tooltip bottom>
-          <span slot="activator">
-            {{ props.header.text }}
-          </span>
-          <span>
-            {{ props.header.text }}
-          </span>
-        </v-tooltip>
-      </template> 
-      <template slot="items" slot-scope="props">
-        <td>
-          <v-checkbox
-            v-model="props.selected"
-            primary
-            hide-details
-          ></v-checkbox>
-        </td>
-        <td>{{ props.item.basicInformation.orderNumber }}</td>
-        <td>{{ props.item.orderQuantity }}</td>
-        <td v-if="props.item.printStatus === true">
-          <v-btn icon @click="toggleStatus(props.item)" class="green--text">
-            <v-icon>done</v-icon>
-          </v-btn>
-        </td>
-        <td v-else>
-          <v-btn icon @click="toggleStatus(props.item)" class="red--text">
-            <v-icon>clear</v-icon>
-          </v-btn>
-        </td>
+    <template>
+      <v-data-table
+        :headers="headers"
+        :items="orderingList"
+        select-all
+        v-model="selected"
+        hide-actions
+        :loading="tblLoading"
+        item-key="key"
+        :search="search"
+      >
+        <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+        <template slot="headerCell" slot-scope="props">
+          <v-tooltip bottom>
+            <span slot="activator">
+              {{ props.header.text }}
+            </span>
+            <span>
+              {{ props.header.text }}
+            </span>
+          </v-tooltip>
+        </template> 
+        <template slot="items" slot-scope="props">
+          <td>
+            <v-checkbox
+              v-model="props.selected"
+              primary
+              hide-details
+            ></v-checkbox>
+          </td>
+          <td>{{ props.item.basicInformation.orderNumber }}</td>
+          <td>{{ props.item.orderQuantity }}</td>
+          <td v-if="props.item.printStatus === true">
+            <v-btn icon @click="toggleStatus(props.item)" class="green--text">
+              <v-icon>done</v-icon>
+            </v-btn>
+          </td>
+          <td v-else>
+            <v-btn icon @click="toggleStatus(props.item)" class="red--text">
+              <v-icon>clear</v-icon>
+            </v-btn>
+          </td>
 
-        <td>{{ props.item.customerInformation.name }}</td>
-        <td>{{ props.item.basicInformation.orderDate }}</td>
-        <td v-if="props.item.shipedDate === ''">-</td>
-        <td v-else>{{ props.item.shipedDate }}</td>
-        <td v-if="props.item.shelf === ''">-</td>
-        <td v-else>{{ props.item.shelf }}</td>
-      </template>
-    </v-data-table>
-    <svg id="code128"></svg>
+          <td>{{ props.item.customerInformation.name }}</td>
+          <td>{{ props.item.basicInformation.orderDate }}</td>
+          <td v-if="props.item.shipedDate === ''">-</td>
+          <td v-else>{{ props.item.shipedDate }}</td>
+          <td v-if="props.item.shelf === ''">-</td>
+          <td v-else>{{ props.item.shelf }}</td>
+        </template>
+      </v-data-table>
+    </template>
+    <!-- ./ Data table -->
   </v-card>
 </template>
 <script>
@@ -107,28 +111,25 @@ import db from '../firebaseInit'
 const uuidv1 = require('uuid/v1')
 
 export default {
-  data() {
-    return {
-      // isFilter: false,
-      fav: true,
-      selected: [],
-      search: '',
-      tblLoading: true,
-      inStock: true,
-      hasBarcode: false,
-      finishedOrder: [],
-      finishedOrderLocal: [],
-      headers: [
-        { text: 'Order Code', value: 'basicInformation.orderNumber' },
-        { text: 'Product QTY', value: 'Product & Barcode Quatity' },
-        { text: 'Has Barcode', value: 'Print Status' },
-        { text: 'Customer', value: 'customerInformation.name' },
-        { text: 'Order Date', value: 'basicInformation.orderDate' },
-        { text: 'Shiped Date', value: 'Shipped Date' },
-        { text: 'Shelf', value: 'Shelf' }
-      ]
-    }
-  },
+  data: () => ({
+    // isFilter: false,
+    selected: [],
+    search: '',
+    tblLoading: true,
+    inStock: true,
+    hasBarcode: false,
+    orderLists: [],
+    orderListsTmp: [],
+    headers: [
+      { text: 'Order Code', value: 'basicInformation.orderNumber' },
+      { text: 'Product QTY', value: 'orderQuantity' },
+      { text: 'Has Barcode', value: 'printStatus' },
+      { text: 'Customer', value: 'customerInformation.name' },
+      { text: 'Order Date', value: 'basicInformation.orderDate' },
+      { text: 'Shiped Date', value: 'shipedDate' },
+      { text: 'Shelf', value: 'shelf' }
+    ]
+  }),
   created () {
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
@@ -139,14 +140,14 @@ export default {
   },
   firestore () {
     return {
-      finishedOrder: db.collection('Finished_Order')
+      orderLists: db.collection('Finished_Order')
     }
   },
   watch: {
-    finishedOrder: function () {
-      if(this.finishedOrder.length !== 0) {
+    orderLists: function () {
+      if(this.orderLists.length !== 0) {
         this.tblLoading = false
-        this.finishedOrderLocal = this.finishedOrder
+        this.orderListsTmp = this.orderLists
       }
     }
   },
@@ -155,10 +156,10 @@ export default {
     onBarcodeScanned (barcode) {
       /* eslint-disable */
       console.log(barcode)
-      this.finishedOrder.forEach((order, i) => {
+      this.orderLists.forEach((order, i) => {
         if(order.basicInformation.orderNumber === barcode) {
           console.log('Push')
-          this.selected.push(this.finishedOrder[i])
+          this.selected.push(this.orderLists[i])
         }
       })
       // do something...
@@ -170,18 +171,18 @@ export default {
     },
     checkOrder() {
       /* eslint-disable */
-      console.log([this.finishedOrder[0]])
-      this.selected = this.finishedOrder
+      console.log([this.orderLists[0]])
+      this.selected = this.orderLists
     },
     searchQuery() {
       if(this.search !== '') {
   
-        this.finishedOrderLocal = this.finishedOrder
+        this.orderListsTmp = this.orderLists
           .filter((order) => {
             return order.customerInformation.name.toLowerCase().includes(this.search) || order.basicInformation.orderNumber.toLowerCase().includes(this.search)
           })
       } else {
-        this.finishedOrderLocal = this.finishedOrder
+        this.orderListsTmp = this.orderLists
       }
 
     },
@@ -259,8 +260,7 @@ export default {
   },
   computed: {
     orderingList() {
-      return this.finishedOrderLocal.map((order) => {
-        // order.barcodeQuantity = this.getOrderQuatity(order.checkOutInformation)
+      return this.orderListsTmp.map((order) => {
         order.orderQuantity = this.getOrderQuatity(order.checkOutInformation)
         order.basicInformation.orderDate = this.getDate(order.basicInformation.orderDate)
         order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''
@@ -269,11 +269,11 @@ export default {
     }
     // filteredItems() {
     //   if(this.isFilter) {
-    //     return this.finishedOrder.filter((order) => {
+    //     return this.orderLists.filter((order) => {
     //       return order.inStock === this.inStock
     //     })
     //   } else {
-    //     return this.finishedOrder
+    //     return this.orderLists
     //   }
     // }
   }
@@ -281,7 +281,6 @@ export default {
 </script>
 
 <style>
-
   .font-red {
     color: rgb(230, 49, 49)
   }

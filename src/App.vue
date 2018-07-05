@@ -35,7 +35,6 @@
                 </v-list-tile-content>
               </v-list-tile>
             </v-list-group>
-            <!-- <v-list-tile v-else @click="test" :key="item.text"> -->
             <v-list-tile v-else :key="item.text" :to="`${item.link}`">
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -173,8 +172,6 @@ export default {
     }
   },
   methods: {
-    test() {
-    },
     userSignOut() {
       this.$store.dispatch('userSignOut');
     }
