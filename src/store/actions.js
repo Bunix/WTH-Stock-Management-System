@@ -4,7 +4,7 @@ import db from '../firebaseInit'
 // import { db } from '../main'
 
 // Set database collection name
-const orderDb = 'Finished_Order'
+const orderDb = 'Order_Db'
 const inStockDb = 'In_Stock_Products'
 
 export const actions = {/* eslint-disable */

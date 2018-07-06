@@ -86,7 +86,7 @@
         v-model="selected"
         hide-actions
         :loading="tblLoading"
-        item-key="key"
+        item-key="id"
         :search="search"
       >
         <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
@@ -108,19 +108,78 @@
               hide-details
             ></v-checkbox>
           </td>
-          <td>{{ props.item.basicInformation.orderNumber }}</td>
+          <td>{{ props.item.order_number }}</td>
           <td>{{ props.item.orderQuantity }}</td>
           <td v-if="props.item.printStatus === true">
-            <v-btn icon @click="setStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
+            <v-btn icon @click="setPrintStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
           </td>
           <td v-else>
-            <v-btn icon @click="setStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
+            <v-btn icon @click="setPrintStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
           </td>
-          <td>{{ trimName(props.item.customerInformation.name) }}</td>
-          <td>{{ props.item.basicInformation.orderDate }}</td>
-          <td v-if="props.item.shipedDate === ''">-</td>
+          <td>{{ trimName(props.item.customer_name) }}</td>
+          <td>{{ props.item.orderDate }}</td>
+          <td v-if="typeof props.item.paidDate === 'undefined'">
+          <!-- <v-edit-dialog
+            :return-value.sync="props.item.setPaidDate"
+            large
+            lazy
+            persistent
+            @save="save"
+            @cancel="cancel"
+            @open="open"
+            @close="close"
+          >
+            <v-icon>event</v-icon>
+            <div>{{ props.item.setPaidDate }}</div>
+            <v-text-field
+              slot="input"
+              v-model="props.item.setPaidDate"
+              label="Edit"
+              single-line
+              counter
+              autofocus
+            ></v-text-field>
+          </v-edit-dialog> -->
+            <template>
+              <v-container grid-list-md>
+                <v-layout row wrap>
+                  <v-flex xs12 lg6>
+                    <v-menu
+                      :return-value.sync="props.item.setPaidDate"
+       
+                      :close-on-content-click="false"
+         
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <v-icon slot="activator">
+                        event
+                      </v-icon>
+                      <v-date-picker v-model="paidDate[props.index]" no-title @input="menu1 = false"></v-date-picker>
+                    </v-menu>
+                    <!-- <p>
+                      <strong>{{ paidDateFormatted[props.index] }}</strong>
+                      {{counter = paidDateFormatted[props.index]}}
+                    </p> -->
+                    <!-- <p>{{ props.index }}</p>
+                    <p>{{ paidDate }}</p> -->
+                    <p>{{ paidDate[props.index] }}</p>
+                    <p>{{ counter }}</p>
+                    <!-- <p><strong>{{ menu1 }}</strong></p> -->
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </template>
+          </td>
+          <td v-else>{{ props.item.paidDate }}</td>
+          <td v-if="typeof props.item.shipedDate === 'undefined'">-</td>
           <td v-else>{{ props.item.shipedDate }}</td>
-          <td v-if="props.item.shelf === ''">-</td>
+          <td v-if="typeof props.item.shelf === 'undefined'">-</td>
           <td v-else>{{ props.item.shelf }}</td>
         </template>
       </v-data-table>
@@ -133,9 +192,15 @@
 import db from '../firebaseInit'
 const uuidv1 = require('uuid/v1')
 
-export default {
+export default {/* eslint-disable */
   data: () => ({
     // isFilter: false,
+    counter: 0,
+    paidDate: [],
+    paidDateFormatted: [],
+    date: null,
+    dateFormatted: null,
+    menu1: false,
     isScanMode: false,
     isAlert: false,
     toggle_exclusive: 0,
@@ -147,58 +212,66 @@ export default {
     orderLists: [],
     orderListsTmp: [],
     headers: [
-      { text: 'Order Code', value: 'basicInformation.orderNumber' },
+      { text: 'Order Code', value: 'order_number' },
       { text: 'Product QTY', value: 'orderQuantity' },
-      { text: 'Has Barcode', value: 'printStatus' },
-      { text: 'Customer', value: 'customerInformation.name' },
+      { text: 'Barcode', value: 'printStatus' },
+      { text: 'Customer', value: 'customerInformation.customer_name' },
       { text: 'Order Date', value: 'basicInformation.orderDate' },
-      { text: 'Shiped Date', value: 'shipedDate' },
       { text: 'Paid Date', value: 'paidDate' },
+      { text: 'Shiped Date', value: 'shipedDate' },
       { text: 'Shelf', value: 'shelf' }
     ]
   }),
-  created () {
+  created() {
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
   },
-  destroyed () {
+  destroyed() {
     // Remove listener when component is destroyed
     this.$barcodeScanner.destroy()
   },
-  firestore () {
+  firestore() {
     return {
-      orderLists: db.collection('Finished_Order')
+      orderLists: db.collection('Order_Db')
     }
   },
   watch: {
-    orderLists: function () {
+    orderLists() {
       if(this.orderLists.length !== 0) {
         this.tblLoading = false
         this.orderListsTmp = this.orderLists
       }
+    },
+    paidDate() {
+      console.log(this.paidDate)
+      if (this.paidDate !== null) {
+        console.log(this.paidDate[this.counter])
+        this.paidDateFormatted[this.counter] = this.formatDate(this.paidDate[this.counter])
+        console.log(this.paidDateFormatted[this.counter])
+      }
     }
   },
-  methods: {
-    // Create callback function to receive barcode when the scanner is already done
-    onBarcodeScanned (barcode) {
+  methods: {/* eslint-disable */
+    formatDate (date) {
+      if (!date) return null
+
+      const [year, month, day] = date.split('-')
+      return `${month}/${day}/${year}`
+    },
+    onBarcodeScanned(barcode) {
       /* eslint-disable */
-      console.log(barcode)
       if(!this.isScanMode) {
-        // console.log('Please active scanner mode')
         this.isAlert = true
         return
       }
 
       this.orderLists.forEach((order, i) => {
-        if(order.basicInformation.orderNumber === barcode) {
-          console.log('Push')
-          this.selected.push(this.orderLists[i])
-        }
+        order.order_number === barcode ? this.selected.push(this.orderLists[i]) : null
       })
     },
     // Reset to the last barcode before hitting enter (whatever anything in the input box)
-    resetBarcode () {
-      let barcode = this.$barcodeScanner.getPreviousCode()
+    resetBarcode() {
+      const barcode = this.$barcodeScanner.getPreviousCode()
       // do something...
     },
     searchQuery() {
@@ -206,7 +279,7 @@ export default {
   
         this.orderListsTmp = this.orderLists
           .filter((order) => {
-            return order.customerInformation.name.toLowerCase().includes(this.search) || order.basicInformation.orderNumber.toLowerCase().includes(this.search)
+            return order.customer_name.toLowerCase().includes(this.search)||order.order_number.toLowerCase().includes(this.search)
           })
       } else {
         this.orderListsTmp = this.orderLists
@@ -257,12 +330,12 @@ export default {
       })
     },
     getDate(timeObj) {
-      return new Date(timeObj.seconds * 1000).toLocaleDateString()
+      return new Date(timeObj).toLocaleDateString()
     },
-    getOrderQuatity(checkOutInformation) {
+    getOrderQuatity(products) {
       let totalQuantity = 0
-      for(let product in checkOutInformation) {
-        totalQuantity += checkOutInformation[product].quantity
+      for(let product in products) {
+        totalQuantity += parseInt(products[product].product_quantity)
       }
       return totalQuantity
     },
@@ -273,24 +346,25 @@ export default {
       this.$store.dispatch('generateInvoice', this.selected)
     },
     deleteOrder() {
-      let confirmDelete = confirm('Are you sure you want to delete this item?')
+      const confirmDelete = confirm('Are you sure you want to delete this item?')
       if (confirmDelete) {
         this.$store.dispatch('deleteOrder', this.selected)
       }
     },
-    setStatus(propsItem) {
-      this.$store.dispatch('setPrintStatus', [propsItem])
+    setPrintStatus(item) {
+      this.$store.dispatch('setPrintStatus', [item])
     },
     trimName(name) {
-      return `${name.slice(0, 9)}...`
+      return name.length > 10 ? `${name.slice(0, 9)}...` : name
     }
   },
   computed: {
     orderingList() {
       return this.orderListsTmp.map((order) => {
-        order.orderQuantity = this.getOrderQuatity(order.checkOutInformation)
-        order.basicInformation.orderDate = this.getDate(order.basicInformation.orderDate)
-        order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''
+        // console.log(order.shipedDate)
+        order.orderQuantity = this.getOrderQuatity(order.items)
+        order.orderDate = this.getDate(order.order_date.date)
+        // order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''
         return order
       })
     }
