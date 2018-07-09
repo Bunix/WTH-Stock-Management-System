@@ -145,10 +145,9 @@
                 <v-layout row wrap>
                   <v-flex xs12 lg6>
                     <v-menu
+                      ref="menu1"
                       :return-value.sync="props.item.setPaidDate"
-       
                       :close-on-content-click="false"
-         
                       :nudge-right="40"
                       lazy
                       transition="scale-transition"
@@ -157,24 +156,17 @@
                       max-width="290px"
                       min-width="290px"
                     >
-                      <v-icon slot="activator">
+                      <v-icon v-show="!paidDateFormatted[props.index]" slot="activator">
                         event
                       </v-icon>
-                      <v-date-picker v-model="paidDate[props.index]" no-title @input="menu1 = false"></v-date-picker>
+                      <v-date-picker v-model="paidDate[props.index]" no-title></v-date-picker>
                     </v-menu>
-                    <!-- <p>
-                      <strong>{{ paidDateFormatted[props.index] }}</strong>
-                      {{counter = paidDateFormatted[props.index]}}
-                    </p> -->
-                    <!-- <p>{{ props.index }}</p>
-                    <p>{{ paidDate }}</p> -->
-                    <p>{{ paidDate[props.index] }}</p>
-                    <p>{{ counter }}</p>
-                    <!-- <p><strong>{{ menu1 }}</strong></p> -->
+                    <p>{{ paidDateFormatted[props.index] }}</p>
                   </v-flex>
                 </v-layout>
               </v-container>
             </template>
+            <!-- ./ Date picker -->
           </td>
           <td v-else>{{ props.item.paidDate }}</td>
           <td v-if="typeof props.item.shipedDate === 'undefined'">-</td>
@@ -243,11 +235,11 @@ export default {/* eslint-disable */
       }
     },
     paidDate() {
-      console.log(this.paidDate)
+      console.log('paid date')
       if (this.paidDate !== null) {
-        console.log(this.paidDate[this.counter])
-        this.paidDateFormatted[this.counter] = this.formatDate(this.paidDate[this.counter])
-        console.log(this.paidDateFormatted[this.counter])
+        this.paidDate.forEach((x, i) => {
+          this.paidDateFormatted[i] = this.formatDate(x)
+        })
       }
     }
   },
