@@ -19,5 +19,8 @@ export const getters = {/* eslint-disable */
   },
   getInvoiceLists(state) {
     return state.invoiceLists
+  },
+  getPaidDate(state) {
+    return state.paidDate
   }
 }

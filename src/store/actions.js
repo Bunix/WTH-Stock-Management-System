@@ -77,15 +77,15 @@ export const actions = {/* eslint-disable */
       })
 
       ref
-      .doc(element.id)
-      .update({
-        printStatus: true,
-        inStock: true
-      }).then(() => {
-        console.log('Update finised')
-      }).catch(error => {
-        console.error('Error writing document: ', error);
-      })
+        .doc(element.id)
+        .update({
+          printStatus: true,
+          inStock: true
+        }).then(() => {
+          console.log('Update finised')
+        }).catch(error => {
+          console.error('Error writing document: ', error);
+        })
     })
 
     
@@ -94,30 +94,30 @@ export const actions = {/* eslint-disable */
       let refInstockDoc = refInstock.doc(key)
       
       refInstockDoc
-      .get()
-      .then(doc => {
-        if(doc.exists) {
-          console.log('Document data:', doc.data())
-          refInstockDoc
-          .update({
-            quantity: products[key].quantity + doc.data().quantity
-          })
-        } else {
-          refInstockDoc
-          .set({
-            name: products[key].name,
-            point: products[key].point,
-            price: products[key].price,
-            quantity: products[key].quantity
-          })
-          .then(function() {
-            console.log('Document successfully written!');
-          })
-          .catch(error => {
-            console.error('Error writing document: ', error);
-            commit('setError', error.message)
-          })
-        }
+        .get()
+        .then(doc => {
+          if(doc.exists) {
+            console.log('Document data:', doc.data())
+            refInstockDoc
+            .update({
+              quantity: products[key].quantity + doc.data().quantity
+            })
+          } else {
+            refInstockDoc
+            .set({
+              name: products[key].name,
+              point: products[key].point,
+              price: products[key].price,
+              quantity: products[key].quantity
+            })
+            .then(function() {
+              console.log('Document successfully written!');
+            })
+            .catch(error => {
+              console.error('Error writing document: ', error);
+              commit('setError', error.message)
+            })
+          }
       })
     }
     router.push('/')
@@ -174,17 +174,37 @@ export const actions = {/* eslint-disable */
 
     payload.forEach(element => {
       ref
-      .doc(element.id)
-      .update({
-        printStatus: !element.printStatus,
-      })
-      .then(() => {
-        console.log('Document successfully updated!')
-      })
-      .catch(error => {
-        console.error('Error update document: ', error)
-        commit('setError', error.message)
-      })
+        .doc(element.id)
+        .update({
+          printStatus: !element.printStatus,
+        })
+        .then(() => {
+          console.log('Document successfully updated!')
+        })
+        .catch(error => {
+          console.error('Error update document: ', error)
+          commit('setError', error.message)
+        })
+    })
+
+  },
+  setPaidDate({commit}, payload) {
+
+    const ref = db.collection(orderDb)
+
+    payload.forEach(element => {
+      ref
+        .doc(element.id)
+        .update({
+          paidDate: element.paidDate,
+        })
+        .then(() => {
+          console.log('Document successfully updated!')
+        })
+        .catch(error => {
+          console.error('Error update document: ', error)
+          commit('setError', error.message)
+        })
     })
 
   }

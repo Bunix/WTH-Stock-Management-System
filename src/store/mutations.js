@@ -13,5 +13,8 @@ export const mutations = {
   },
   setInvoiceLists(state, payload) {
     state.invoiceLists = payload
+  },
+  setPaidDate(state, payload) {
+    state.paidDate = payload
   }
 }
