@@ -100,60 +100,112 @@
           </v-tooltip>
         </template> 
         <template slot="items" slot-scope="props">
-          <td>
-            <v-checkbox
-              v-model="props.selected"
-              primary
-              hide-details
-            ></v-checkbox>
-          </td>
-          <td>{{ props.item.order_number }}</td>
-          <td>{{ props.item.orderQuantity }}</td>
-          <td v-if="props.item.printStatus === true">
-            <v-btn icon @click="setPrintStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
-          </td>
-          <td v-else>
-            <v-btn icon @click="setPrintStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
-          </td>
-          <td>{{ trimName(props.item.customer_name) }}</td>
-          <td>{{ props.item.orderDate }}</td>
-          <td v-if="typeof props.item.paidDate === 'undefined'">
-            <template>
-              <v-container grid-list-md>
-                <v-layout row wrap>
-                  <v-flex xs12 lg6>
-                    <v-menu
-                      ref="menu"
-                      :return-value.sync="props.item.setPaidDate"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <v-icon color="blue darken-2" slot="activator">
-                        event
-                      </v-icon>
-                      <v-date-picker v-model="paidDate[props.index]" no-title>
-                        <v-spacer></v-spacer>
-                        <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-                        <v-btn flat color="primary" @click="setPaidDate(props.item, props.index)">OK</v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </template>
-          </td>
-          <td v-else>{{ props.item.paidDate }}</td>
-          <td v-if="typeof props.item.shipedDate === 'undefined'">-</td>
-          <td v-else>{{ props.item.shipedDate }}</td>
-          <td v-if="typeof props.item.shelf === 'undefined'">-</td>
-          <td v-else>{{ props.item.shelf }}</td>
+          <tr @click="props.expanded = !props.expanded">
+            <td>
+              <v-checkbox
+                @click.stop
+                v-model="props.selected"
+                primary
+                hide-details
+              ></v-checkbox>
+            </td>
+            <td>{{ props.item.order_number }}</td>
+            <td>{{ props.item.orderQuantity }}</td>
+            <td v-if="props.item.printStatus === true">
+              <v-btn icon @click.stop="setPrintStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
+            </td>
+            <td v-else>
+              <v-btn icon @click.stop="setPrintStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
+            </td>
+            <td>{{ trimName(props.item.customer_name) }}</td>
+            <td>{{ props.item.orderDate }}</td>
+            <td v-if="typeof props.item.paidDate === 'undefined'">
+              <template>
+                <v-container grid-list-md>
+                  <v-layout row wrap>
+                    <v-flex xs12 lg6>
+                      <v-menu
+                        ref="menu"
+                        :return-value.sync="props.item.setPaidDate"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <v-icon @click.native.stop.prevent color="blue darken-2" slot="activator">
+                          event
+                        </v-icon>
+
+                        <v-date-picker v-model="paidDate[props.index]" no-title>
+                          <v-spacer></v-spacer>
+                          <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+                          <v-btn flat color="primary" @click="setPaidDate(props.item, props.index)">OK</v-btn>
+                        </v-date-picker>
+                      </v-menu>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </template>
+            </td>
+            <td v-else>{{ props.item.paidDate }}</td>
+            <td v-if="typeof props.item.shipedDate === 'undefined'">-</td>
+            <td v-else>{{ props.item.shipedDate }}</td>
+            <td v-if="typeof props.item.shelf === 'undefined'">-</td>
+            <td v-else>{{ props.item.shelf }}</td>
+          </tr>
         </template>
+        <!-- ./ Data -->
+        <template slot="expand" slot-scope="props">
+          <v-card flat>
+            <!-- <v-card-text>
+              <ul>
+                <li v-for="(item, i) in props.item.items" :key="i">
+                  <p>
+                    <img :src="getProductInfo(item.product_images[0])" alt="Item image" width="150px">
+                  </p>
+                  {{ item.product_name }}<br>
+                  SKU: {{ item.product_number }}<br>
+                  Qyt: {{ item.product_quantity }}<br>
+                </li>
+              </ul>
+            </v-card-text> -->
+            <v-list dense class="height-300">
+              <template v-for="(item, index) in props.item.items">
+                <v-divider
+                  v-if="index > 0"
+                  :key="index"
+                ></v-divider>
+
+                <v-list-tile
+                  :key="item.product_name"
+                  avatar
+                >
+                  <v-list-tile-avatar class="product-thumb">
+                    <img :src="getProductInfo(item.product_images[0])" width="100%">
+                  </v-list-tile-avatar>
+
+                  <v-list-tile-content>
+                    <div class="pl-4">
+                    <v-list-tile-title>
+                      {{ item.product_name }}
+                      <span>({{ item.product_number }})</span>
+                    </v-list-tile-title>
+                    <v-list-tile-sub-title>
+                      Qyt: {{ item.product_quantity }}
+                    </v-list-tile-sub-title>
+                    </div>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </template>
+            </v-list>
+            
+          </v-card>
+        </template>
+        <!-- ./ Expand -->
       </v-data-table>
     </template>
     <!-- ./ Data table -->
@@ -167,6 +219,7 @@ const uuidv1 = require('uuid/v1')
 export default {/* eslint-disable */
   data: () => ({
     // isFilter: false,
+    davider: true,
     menu: false,
     counter: 0,
     paidDate: [],
@@ -214,6 +267,14 @@ export default {/* eslint-disable */
     }
   },
   methods: {/* eslint-disable */
+    getProductInfo(item) {
+      // const regX = new RegExp('(?i)\.(jpg|png|gif)', 'g')
+      if(item !== undefined) {
+        return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(item.thumbnail) ? item.thumbnail : 'https://www.freeiconspng.com/uploads/no-image-icon-15.png'
+      } else {
+        return 'https://www.freeiconspng.com/uploads/no-image-icon-15.png'
+      }
+    },
     setPaidDate(item, index) {
       console.log(item)
       const [year, month, day] = this.paidDate[index].split('-')
@@ -351,6 +412,19 @@ export default {/* eslint-disable */
 </script>
 
 <style>
+  .product-thumb .avatar {
+    height: 100px !important;
+    width: 100px !important;
+  }
+
+  .product-thumb .avatar img {
+    border-radius: 0;
+  }
+
+  .height-300.list--dense .list__tile--avatar{
+    height: 150px !important;
+  }
+
   .icon.scanMode {
     color: #00C853 !important;
   }
