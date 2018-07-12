@@ -2,7 +2,6 @@
   <v-card class="dashboard">
 
       <v-toolbar color="white" flat>
-
           <v-toolbar-title class="font-weight-black blue--text text--darken-4">
             <h1 class="font-weight-black">TOTAL ORDERS: <span class="orange--text">{{ orderingList.length }}</span></h1>
           </v-toolbar-title>
@@ -14,9 +13,7 @@
             <span v-if="isScanMode" class="green--text"> ON </span>
             <span v-else class="red--text"> OFF </span>
           </v-toolbar-title>
-
       </v-toolbar>
-
     <!-- ./ Summary Overview -->
 
     <v-card-title>
@@ -86,8 +83,8 @@
         hide-actions
         :loading="tblLoading"
         item-key="id"
-        :search="search"
       >
+      
         <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
         <template slot="headerCell" slot-scope="props">
           <v-tooltip bottom>
@@ -109,7 +106,7 @@
                 hide-details
               ></v-checkbox>
             </td>
-            <td>{{ props.item.order_number }}</td>
+            <td class="green--text text--darken-4">{{ props.item.order_number }}</td>
             <td>{{ props.item.orderQuantity }}</td>
             <td v-if="props.item.printStatus === true">
               <v-btn icon @click.stop="setPrintStatus(props.item)" class="green--text"><v-icon>done</v-icon></v-btn>
@@ -117,7 +114,7 @@
             <td v-else>
               <v-btn icon @click.stop="setPrintStatus(props.item)" class="red--text"><v-icon>clear</v-icon></v-btn>
             </td>
-            <td>{{ trimName(props.item.customer_name) }}</td>
+            <td>{{ props.item.customer_name }}</td>
             <td>{{ props.item.orderDate }}</td>
             <td v-if="typeof props.item.paidDate === 'undefined'">
               <template>
@@ -161,18 +158,6 @@
         <!-- ./ Data -->
         <template slot="expand" slot-scope="props">
           <v-card flat>
-            <!-- <v-card-text>
-              <ul>
-                <li v-for="(item, i) in props.item.items" :key="i">
-                  <p>
-                    <img :src="getProductInfo(item.product_images[0])" alt="Item image" width="150px">
-                  </p>
-                  {{ item.product_name }}<br>
-                  SKU: {{ item.product_number }}<br>
-                  Qyt: {{ item.product_quantity }}<br>
-                </li>
-              </ul>
-            </v-card-text> -->
             <v-list dense class="height-300">
               <template v-for="(item, index) in props.item.items">
                 <v-divider
@@ -192,10 +177,10 @@
                     <div class="pl-4">
                     <v-list-tile-title>
                       {{ item.product_name }}
-                      <span>({{ item.product_number }})</span>
+                      <span> ({{ item.product_number }})</span>
                     </v-list-tile-title>
                     <v-list-tile-sub-title>
-                      Qyt: {{ item.product_quantity }}
+                      Qyt: {{ item.product_quantity }} -- {{ item.product_manufacturer }}
                     </v-list-tile-sub-title>
                     </div>
                   </v-list-tile-content>
@@ -238,8 +223,8 @@ export default {/* eslint-disable */
       { text: 'Order Code', value: 'order_number' },
       { text: 'Product QTY', value: 'orderQuantity' },
       { text: 'Barcode', value: 'printStatus' },
-      { text: 'Customer', value: 'customerInformation.customer_name' },
-      { text: 'Order Date', value: 'basicInformation.orderDate' },
+      { text: 'Customer', value: 'customer_name' },
+      { text: 'Order Date', value: 'order_date' },
       { text: 'Paid Date', value: 'paidDate' },
       { text: 'Shiped Date', value: 'shipedDate' },
       { text: 'Shelf', value: 'shelf' }
@@ -260,9 +245,13 @@ export default {/* eslint-disable */
   },
   watch: {
     orderLists() {
+      console.log('Hello')
       if(this.orderLists.length !== 0) {
         this.tblLoading = false
         this.orderListsTmp = this.orderLists
+        console.log(this.orderListsTmp)
+      } else {
+        console.log('No product')
       }
     }
   },
@@ -306,12 +295,21 @@ export default {/* eslint-disable */
     },
     searchQuery() {
       if(this.search !== '') {
-  
+        const searchKey = this.search.toLowerCase()
         this.orderListsTmp = this.orderLists
           .filter((order) => {
-            return order.customer_name.toLowerCase().includes(this.search)||order.order_number.toLowerCase().includes(this.search)
+            const orderNumber = order.order_number.toLowerCase()
+            const cusName = order.customer_name.toLowerCase()
+            // console.log(order.order_number.toLowerCase())
+            // console.log(order.order_number.toLowerCase().includes(this.search))
+            // return order.order_number.toLowerCase().includes(this.search) || order.customer_name.toLowerCase().includes(this.search)
+            // return orderNumber.includes(searchKey) || cusName.includes(searchKey)
+            console.log(cusName.includes(searchKey))
+            return cusName.includes(searchKey)
           })
+        // console.log(this.orderListsTmp)
       } else {
+        console.log('All')
         this.orderListsTmp = this.orderLists
       }
 
@@ -391,10 +389,11 @@ export default {/* eslint-disable */
   computed: {
     orderingList() {
       return this.orderListsTmp.map((order) => {
-        // console.log(order.shipedDate)
+        // console.log(order)
         order.orderQuantity = this.getOrderQuatity(order.items)
         order.orderDate = this.getDate(order.order_date.date)
         // order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''
+        console.log(order)
         return order
       })
     }
