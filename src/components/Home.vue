@@ -245,13 +245,10 @@ export default {/* eslint-disable */
   },
   watch: {
     orderLists() {
-      console.log('Hello')
+      // console.log('Hello')
       if(this.orderLists.length !== 0) {
         this.tblLoading = false
         this.orderListsTmp = this.orderLists
-        console.log(this.orderListsTmp)
-      } else {
-        console.log('No product')
       }
     }
   },
@@ -265,7 +262,6 @@ export default {/* eslint-disable */
       }
     },
     setPaidDate(item, index) {
-      console.log(item)
       const [year, month, day] = this.paidDate[index].split('-')
       item.paidDate = `${month}/${day}/${year}`
       this.$store.dispatch('setPaidDate', [item])
@@ -300,16 +296,9 @@ export default {/* eslint-disable */
           .filter((order) => {
             const orderNumber = order.order_number.toLowerCase()
             const cusName = order.customer_name.toLowerCase()
-            // console.log(order.order_number.toLowerCase())
-            // console.log(order.order_number.toLowerCase().includes(this.search))
-            // return order.order_number.toLowerCase().includes(this.search) || order.customer_name.toLowerCase().includes(this.search)
-            // return orderNumber.includes(searchKey) || cusName.includes(searchKey)
-            console.log(cusName.includes(searchKey))
-            return cusName.includes(searchKey)
+            return orderNumber.includes(searchKey) || cusName.includes(searchKey)
           })
-        // console.log(this.orderListsTmp)
       } else {
-        console.log('All')
         this.orderListsTmp = this.orderLists
       }
 
@@ -389,11 +378,8 @@ export default {/* eslint-disable */
   computed: {
     orderingList() {
       return this.orderListsTmp.map((order) => {
-        // console.log(order)
         order.orderQuantity = this.getOrderQuatity(order.items)
         order.orderDate = this.getDate(order.order_date.date)
-        // order.shipedDate = order.shipedDate !== '' ? this.getDate(order.shipedDate) : ''
-        console.log(order)
         return order
       })
     }
