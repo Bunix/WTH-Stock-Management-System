@@ -100,7 +100,7 @@
           </v-tooltip>
         </template> 
         <template slot="items" slot-scope="props">
-          <tr @click="props.expanded = !props.expanded">
+          <tr @click.prevent.stop="props.expanded = !props.expanded">
             <td>
               <v-checkbox
                 @click.stop
@@ -135,14 +135,14 @@
                         full-width
                         max-width="290px"
                         min-width="290px"
+                        open-on-hover
                       >
-                        <v-icon @click.native.stop.prevent color="blue darken-2" slot="activator">
+                        <v-icon color="blue darken-2" slot="activator">
                           event
                         </v-icon>
 
                         <v-date-picker v-model="paidDate[props.index]" no-title>
                           <v-spacer></v-spacer>
-                          <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
                           <v-btn flat color="primary" @click="setPaidDate(props.item, props.index)">OK</v-btn>
                         </v-date-picker>
                       </v-menu>
