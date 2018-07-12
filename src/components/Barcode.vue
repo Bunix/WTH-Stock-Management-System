@@ -77,7 +77,8 @@ export default {
   watch: {
     barcodeStartPos() {
       this.barcodeLists.forEach((barcode, i) => {
-        console.log(this.$refs['barcode-' + (i + 1)])
+        // console.log(this.$refs['barcode-' + (i + 1)])
+        this.$refs['barcode-' + (i + 1)][0]
       })
       this.generateBarcode()
     }
@@ -105,8 +106,15 @@ export default {
       }
     },
     generateBarcode() {
-      console.log('Hello')
+      // console.log('Hello')
+
+      // console.log(this.$refs['barcode-1'])
+      // console.log(removebarcode)
       this.barcodeLists.forEach((element, i) => {
+        const removebarcode = document.getElementById('barcode-' + (i + 1))
+        if(removebarcode !== null) {
+          removebarcode.parentNode.removeChild(removebarcode)
+        }
         JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.order_number)
       })
     }
@@ -116,7 +124,7 @@ export default {
     this.$nextTick(() => {
       this.barcodeLists.forEach((element, i) => {
         console.log(i)
-        JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.order_number)
+        JsBarcode(`#barcode-${1 + parseInt(i)}`, element.order_number)
       })
     })
   }
