@@ -11,7 +11,7 @@
       </v-tooltip>
 
       <template>
-        <v-form v-on:submit.stop.prevent>
+        <v-form v-on:submit.stop.prevent="generateBarcode">
           <v-container>
             <v-layout row wrap>
               <v-flex xs12>
@@ -69,6 +69,7 @@ export default {
   data() {
     return {
       barcodeStartPos: 1,
+      barcodeLastPos: 1,
       barcodeLists: this.$store.getters.getBarcodeLists,
       barcodeSize: [248, 350],
       barcodePaperSize: [2480, 3508]
@@ -77,10 +78,8 @@ export default {
   watch: {
     barcodeStartPos() {
       this.barcodeLists.forEach((barcode, i) => {
-        // console.log(this.$refs['barcode-' + (i + 1)])
         this.$refs['barcode-' + (i + 1)][0]
       })
-      this.generateBarcode()
     }
   },
   methods: {
@@ -106,24 +105,22 @@ export default {
       }
     },
     generateBarcode() {
-      // console.log('Hello')
-
-      // console.log(this.$refs['barcode-1'])
-      // console.log(removebarcode)
       this.barcodeLists.forEach((element, i) => {
-        const removebarcode = document.getElementById('barcode-' + (i + 1))
+        const removebarcode = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
         if(removebarcode !== null) {
-          removebarcode.parentNode.removeChild(removebarcode)
+          removebarcode.innerHTML = ''
+          // console.log(removebarcode)
         }
         JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.order_number)
       })
+      this.barcodeLastPos = this.barcodeStartPos
     }
   },
   mounted() {
     // Generate barcode when element is render.
     this.$nextTick(() => {
       this.barcodeLists.forEach((element, i) => {
-        console.log(i)
+        // console.log(i)
         JsBarcode(`#barcode-${1 + parseInt(i)}`, element.order_number)
       })
     })
