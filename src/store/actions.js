@@ -61,18 +61,28 @@ export const actions = {/* eslint-disable */
     
     payload.forEach(element => {
 
-      let skuLists = Object.keys(element.checkOutInformation)
+      // let skuLists = Object.keys(element.checkOutInformation)
+      let itemLists = element.items
+      // console.log(itemLists)
+      let skuLists = itemLists.map((order) => {
+        return [order.product_number, order.product_name, order.product_quantity, order.product_manufacturer]
+      })
+
+      // console.log(skuLists)
 
       skuLists.forEach((sku) => {
-        if(products[sku] === undefined) {
-          products[sku] = {
-            name: element['checkOutInformation'][sku].name,
-            point: element['checkOutInformation'][sku].point,
-            price: element['checkOutInformation'][sku].price,
-            quantity: element['checkOutInformation'][sku].quantity
+        // console.log(sku[3])
+        if(products[sku[0]] === undefined) {
+          
+          products[sku[0]] = {
+            name: sku[1],
+            // point: element['checkOutInformation'][sku].point,
+            // price: element['checkOutInformation'][sku].price,
+            brand: sku[3],
+            quantity: sku[2]
           }
         } else {
-          products[sku].quantity += element['checkOutInformation'][sku].quantity
+          products[0].quantity += sku[2]
         }
       })
 
@@ -88,10 +98,13 @@ export const actions = {/* eslint-disable */
         })
     })
 
+    console.log(products)
     
     for(let key in products) {
+      // console.log(key)
 
       let refInstockDoc = refInstock.doc(key)
+      // console.log(products)
       
       refInstockDoc
         .get()
@@ -100,14 +113,14 @@ export const actions = {/* eslint-disable */
             console.log('Document data:', doc.data())
             refInstockDoc
             .update({
-              quantity: products[key].quantity + doc.data().quantity
+              quantity: parseInt(products[key].quantity) + parseInt(doc.data().quantity)
             })
           } else {
             refInstockDoc
             .set({
               name: products[key].name,
-              point: products[key].point,
-              price: products[key].price,
+              // point: products[key].point,
+              brand: products[key].brand,
               quantity: products[key].quantity
             })
             .then(function() {

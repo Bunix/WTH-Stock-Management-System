@@ -84,7 +84,7 @@
         </td>
         <td>{{ props.item.id }}</td>
         <td>{{ props.item.name }}</td>
-        <td>{{ props.item.price }}</td>
+        <td>{{ props.item.brand }}</td>
         <td>{{ props.item.quantity }}</td>
         <td>{{ props.item.shelf }}</td>
       </template>
@@ -110,7 +110,7 @@ export default {
     headers: [
       { text: 'Product Code', value: 'Product Code' },
       { text: 'Product Name', value: 'Product Name' },
-      { text: 'Price', value: 'Price' },
+      { text: 'Brand', value: 'Brand' },
       { text: 'Quantity', value: 'Quantity' },
       { text: 'Shelf', value: 'Shelf' }
     ]
