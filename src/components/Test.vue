@@ -1,25 +1,79 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    hide-actions
-    class="elevation-1"
-  >
-    <template slot="items" slot-scope="props">
-      <td>{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.calories }}</td>
-      <td class="text-xs-right">{{ props.item.fat }}</td>
-      <td class="text-xs-right">{{ props.item.carbs }}</td>
-      <td class="text-xs-right">{{ props.item.protein }}</td>
-      <td class="text-xs-right">{{ props.item.iron }}</td>
-    </template>
-  </v-data-table>
+  <div>
+    <v-data-table
+      :headers="headers"
+      :items="desserts"
+    >
+      <template slot="items" slot-scope="props">
+        <td>
+          <v-edit-dialog
+            :return-value.sync="props.item.name"
+            lazy
+            @save="save"
+            @cancel="cancel"
+            @open="open"
+            @close="close"
+          > {{ props.item.name }}
+            <v-text-field
+              slot="input"
+              v-model="props.item.name"
+              :rules="[max25chars]"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
+          </v-edit-dialog>
+        </td>
+        <td class="text-xs-right">{{ props.item.calories }}</td>
+        <td class="text-xs-right">{{ props.item.fat }}</td>
+        <td class="text-xs-right">{{ props.item.carbs }}</td>
+        <td class="text-xs-right">{{ props.item.protein }}</td>
+        <td class="text-xs-right">
+          <v-edit-dialog
+            :return-value.sync="props.item.iron"
+            large
+            lazy
+            persistent
+            @save="save"
+            @cancel="cancel"
+            @open="open"
+            @close="close"
+          >
+            <div>{{ props.item.iron }}</div>
+            <div slot="input" class="mt-3 title">Update Iron</div>
+            <v-text-field
+              slot="input"
+              v-model="props.item.iron"
+              :rules="[max25chars]"
+              label="Edit"
+              single-line
+              counter
+              autofocus
+            ></v-text-field>
+          </v-edit-dialog>
+        </td>
+      </template>
+      <template slot="pageText" slot-scope="{ pageStart, pageStop }">
+        From {{ pageStart }} to {{ pageStop }}
+      </template>
+    </v-data-table>
+
+    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+      {{ snackText }}
+      <v-btn flat @click="snack = false">Close</v-btn>
+    </v-snackbar>
+  </div>
 </template>
 
-<script>
+<script>/* eslint-disable */
   export default {
     data () {
       return {
+        snack: false,
+        snackColor: '',
+        snackText: '',
+        max25chars: (v) => v.length <= 25 || 'Input too long!',
+        pagination: {},
         headers: [
           {
             text: 'Dessert (100g serving)',
@@ -27,11 +81,11 @@
             sortable: false,
             value: 'name'
           },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' }
+          {text: 'Calories', value: 'calories'},
+          {text: 'Fat (g)', value: 'fat'},
+          {text: 'Carbs (g)', value: 'carbs'},
+          {text: 'Protein (g)', value: 'protein'},
+          {text: 'Iron (%)', value: 'iron'}
         ],
         desserts: [
           {
@@ -125,6 +179,26 @@
             iron: '6%'
           }
         ]
+      }
+    },
+    methods: {
+      save () {
+        this.snack = true
+        this.snackColor = 'success'
+        this.snackText = 'Data saved'
+      },
+      cancel () {
+        this.snack = true
+        this.snackColor = 'error'
+        this.snackText = 'Canceled'
+      },
+      open () {
+        this.snack = true
+        this.snackColor = 'info'
+        this.snackText = 'Dialog opened'
+      },
+      close () {
+        console.log('Dialog closed')
       }
     }
   }

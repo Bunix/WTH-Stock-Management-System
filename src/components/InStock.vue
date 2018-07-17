@@ -4,7 +4,7 @@
       <v-layout row>
         <v-flex>
           <h1 class="font-weight-black blue--text text--darken-4 ">
-            PRODUCTS QTY: <span class="orange--text">{{ inStockProductsTmp.length }}</span>
+            SKU: <span class="orange--text">{{ inStockProductsTmp.length }}</span>
           </h1>
           <v-spacer></v-spacer>
         </v-flex>
@@ -51,6 +51,31 @@
 
     <v-spacer></v-spacer>
 
+   <v-toolbar flat color="white" style="height: 0 !important">
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Set Shelf</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field v-model="shelf" label="Shelf"></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-toolbar>
+
     <v-data-table
       :headers="headers"
       :items="inStockProductsTmp"
@@ -86,7 +111,16 @@
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.brand }}</td>
         <td>{{ props.item.quantity }}</td>
-        <td>{{ props.item.shelf }}</td>
+        <td v-if="typeof props.item.shelf === 'undefined'">
+          <v-btn icon @click="setShelf(props.item)">
+            <v-icon small>
+              edit
+            </v-icon>
+          </v-btn>
+        </td>
+        <td v-else>
+          {{ props.item.shelf }}
+        </td>
       </template>
 
     </v-data-table>
@@ -102,17 +136,20 @@ import db from '../firebaseInit'
 
 export default {
   data: () => ({
+    dialog: false,
+    shelf: '',
+    editedItem: '',
     search: '',
     inStockProducts: [],
     inStockProductsTmp: [],
     tblLoading: true,
     selected: [],
     headers: [
-      { text: 'Product Code', value: 'Product Code' },
-      { text: 'Product Name', value: 'Product Name' },
-      { text: 'Brand', value: 'Brand' },
-      { text: 'Quantity', value: 'Quantity' },
-      { text: 'Shelf', value: 'Shelf' }
+      { text: 'Product Code', value: 'id' },
+      { text: 'Product Name', value: 'name' },
+      { text: 'Brand', value: 'brand' },
+      { text: 'Quantity', value: 'quantity' },
+      { text: 'Shelf', value: 'shelf' }
     ]
   }),
   firestore () {
@@ -138,6 +175,22 @@ export default {
         this.$store.dispatch('deleteProducts', this.selected)
       }
     },
+    setShelf(item) {
+      this.editedItem = item
+      this.dialog = true
+    },
+    deleteItem (item) {
+      const index = this.desserts.indexOf(item)
+      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+    },
+    close() {
+      this.dialog = false
+    },
+    save() {
+      this.editedItem.shelf = this.shelf
+      this.$store.dispatch('setShelf', this.editedItem)
+      this.close()
+    }
   },
   watch: {
     inStockProducts: function () {
@@ -145,6 +198,9 @@ export default {
         this.tblLoading = false
         this.inStockProductsTmp = this.inStockProducts 
       }
+    },
+    dialog (val) {
+      val || this.close()
     }
   }
 }

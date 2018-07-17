@@ -1,5 +1,21 @@
 <template>
   <v-card class="dashboard">
+              <v-edit-dialog
+           
+            large
+            @save="save"
+            @cancel="cancel"
+          >
+            <v-icon>event</v-icon>
+         
+            <v-text-field
+              slot="input"
+              label="Edit"
+              single-line
+              counter
+              autofocus
+            ></v-text-field>
+          </v-edit-dialog>
 
       <v-toolbar color="white" flat>
 
@@ -119,28 +135,7 @@
           <td>{{ trimName(props.item.customer_name) }}</td>
           <td>{{ props.item.orderDate }}</td>
           <td v-if="typeof props.item.paidDate === 'undefined'">
-          <!-- <v-edit-dialog
-            :return-value.sync="props.item.setPaidDate"
-            large
-            lazy
-            persistent
-            @save="save"
-            @cancel="cancel"
-            @open="open"
-            @close="close"
-          >
-            <v-icon>event</v-icon>
-            <div>{{ props.item.setPaidDate }}</div>
-            <v-text-field
-              slot="input"
-              v-model="props.item.setPaidDate"
-              label="Edit"
-              single-line
-              counter
-              autofocus
-            ></v-text-field>
-          </v-edit-dialog> -->
-            <template>
+            <!-- <template>
               <v-container grid-list-md>
                 <v-layout row wrap>
                   <v-flex xs12 lg6>
@@ -165,7 +160,7 @@
                   </v-flex>
                 </v-layout>
               </v-container>
-            </template>
+            </template> -->
             <!-- ./ Date picker -->
           </td>
           <td v-else>{{ props.item.paidDate }}</td>
@@ -244,6 +239,12 @@ export default {/* eslint-disable */
     }
   },
   methods: {/* eslint-disable */
+    save() {
+      console.log('save')
+    },
+    cancel() {
+      console.log('close')
+    },
     formatDate (date) {
       if (!date) return null
 

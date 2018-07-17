@@ -220,5 +220,24 @@ export const actions = {/* eslint-disable */
         })
     })
 
+  },
+  setShelf({commit}, payload) {
+    const refInstock = db.collection(inStockDb)
+    let refInstockDoc = refInstock.doc(payload.id)
+
+    refInstockDoc
+    .set({
+      name: payload.name,
+      brand: payload.brand,
+      quantity: payload.quantity,
+      shelf: payload.shelf
+    })
+    .then(function() {
+      console.log('Document successfully written!');
+    })
+    .catch(error => {
+      console.error('Error writing document: ', error);
+      commit('setError', error.message)
+    })
   }
 }
