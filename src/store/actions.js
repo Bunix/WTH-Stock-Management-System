@@ -53,6 +53,10 @@ export const actions = {/* eslint-disable */
     commit('setBarcodeLists', payload)
     router.push('/barcode')
   },
+  generateBarcodeProduct({commit}, payload) {
+    commit('setBarcodeLists', payload)
+    router.push('/barcodeproduct')
+  },
   updateStock({commit}, payload) {
     
     let products = {}

@@ -28,11 +28,8 @@
       </template>
 
       <v-spacer></v-spacer>
-
-      <v-btn color="primary" @click.native="print('updateStock')">
-        <v-icon left>print</v-icon>Print & Update stock
-      </v-btn>
-      <v-btn @click.native="print">Print</v-btn>
+      
+      <v-btn color="primary" @click.native="print">Print</v-btn>
     </v-toolbar>
 
     <v-spacer></v-spacer>
@@ -121,11 +118,10 @@ export default {
     // Generate barcode when element is render.
     this.$nextTick(() => {
       this.barcodeLists.forEach((element, i) => {
-        if(element.order_number !== undefined) {
-          JsBarcode(`#barcode-${1 + parseInt(i)}`, element.order_number)
-          return
-        }
-          JsBarcode(`#barcode-${1 + parseInt(i)}`, element.id)
+        JsBarcode(`#barcode-${1 + parseInt(i)}`, element.id)
+        const removebarcode = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
+        var p = document.createElement("p");
+        // removebarcode.parentNode.innerHTML = '<p>Hello</p>'
       })
     })
   }
@@ -160,6 +156,6 @@ export default {
 
   .barcode svg {
     width: 100%;
-    height: auto;
+    height: 100px;
   }
 </style>

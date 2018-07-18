@@ -40,10 +40,9 @@ const routerOptions = [
     // beforeRouteEnter: checkBarcode
   },
   {
-    path: '/test',
-    component: 'Test'
-  }
-  ,
+    path: '/barcodeproduct',
+    component: 'BarcodeProduct'
+  },
   {
     path: '/test2',
     component: 'Test2'
