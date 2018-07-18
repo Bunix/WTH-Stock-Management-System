@@ -151,8 +151,10 @@
             <td v-else>{{ props.item.paidDate }}</td>
             <td v-if="typeof props.item.shipedDate === 'undefined'">-</td>
             <td v-else>{{ props.item.shipedDate }}</td>
-            <td v-if="typeof props.item.shelf === 'undefined'">-</td>
-            <td v-else>{{ props.item.shelf }}</td>
+            <td v-if="typeof props.item.shelfLists === 'undefined'">{{ getShelf(props.item) }}</td>
+            <td v-else>{{ props.item.shelfLists }}</td>
+            <td v-if="typeof props.item.ems === 'undefined'">-</td>
+            <td v-else>{{ props.item.ems }}</td>
           </tr>
         </template>
         <!-- ./ Data -->
@@ -202,34 +204,35 @@ import db from '../firebaseInit'
 const uuidv1 = require('uuid/v1')
 
 export default {/* eslint-disable */
-  data: () => ({
-    // isFilter: false,
-    davider: true,
-    menu: false,
-    counter: 0,
-    paidDate: [],
-    paidDateFormatted: [],
-    isScanMode: false,
-    isAlert: false,
-    toggle_exclusive: 0,
-    selected: [],
-    search: '',
-    tblLoading: true,
-    inStock: true,
-    hasBarcode: false,
-    orderLists: [],
-    orderListsTmp: [],
-    headers: [
-      { text: 'Order Code', value: 'order_number' },
-      { text: 'Product QTY', value: 'orderQuantity' },
-      { text: 'Barcode', value: 'printStatus' },
-      { text: 'Customer', value: 'customer_name' },
-      { text: 'Order Date', value: 'order_date' },
-      { text: 'Paid Date', value: 'paidDate' },
-      { text: 'Shiped Date', value: 'shipedDate' },
-      { text: 'Shelf', value: 'shelf' }
-    ]
-  }),
+  data() {
+    return {
+      // isFilter: false,
+      // shelfLists: '',
+      menu: false,
+      paidDate: [],
+      paidDateFormatted: [],
+      isScanMode: false,
+      isAlert: false,
+      selected: [],
+      search: '',
+      tblLoading: true,
+      inStock: true,
+      hasBarcode: false,
+      orderLists: [],
+      orderListsTmp: [],
+      headers: [
+        { text: 'Order Code', value: 'order_number' },
+        { text: 'QTY', value: 'orderQuantity' },
+        { text: 'Barcode', value: 'printStatus' },
+        { text: 'Customer', value: 'customer_name' },
+        { text: 'Ordered', value: 'order_date' },
+        { text: 'Paid', value: 'paidDate' },
+        { text: 'Shiped', value: 'shipedDate' },
+        { text: 'Shelf', value: 'shelfLists' },
+        { text: 'EMS', value: 'ems' }
+      ]
+    }
+  },
   created() {
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
@@ -240,19 +243,40 @@ export default {/* eslint-disable */
   },
   firestore() {
     return {
-      orderLists: db.collection('Order_Db')
+      orderLists: db.collection('Order_Db'),
+      // shelfLists: db.collection('In_Stock_Products')
     }
   },
   watch: {
+    // shelfLists() {
+    //   console.log('Watch')
+    //   console.log(this.shelfLists)
+    //   // if(this.shelfLists.length !== 0) {
+    //   //   console.log('Set Shelf')
+    //   //   this.setShelfData()
+    //   // }
+    //   // console.log([...this.shelfLists])
+    // },
     orderLists() {
       // console.log('Hello')
       if(this.orderLists.length !== 0) {
+        // console.log('Set Order')
         this.tblLoading = false
         this.orderListsTmp = this.orderLists
+        this.$store.dispatch('setShelfLists', [...this.orderListsTmp])
       }
     }
   },
   methods: {/* eslint-disable */
+    getShelf(order) {
+      // console.log(order)
+      // console.log(this.shelfLists)
+      return order.items.map((item) => {
+        // console.log('map')
+        return this.shelfLists[item.product_number]
+      })
+      // console.log(this.$store.getters.getBarcodeLists)
+    },
     getProductInfo(item) {
       // const regX = new RegExp('(?i)\.(jpg|png|gif)', 'g')
       if(item !== undefined) {
@@ -374,6 +398,30 @@ export default {/* eslint-disable */
     trimName(name) {
       return name.length > 10 ? `${name.slice(0, 9)}...` : name
     }
+    // setShelfData() {
+      
+    //   this.orderLists.map((order) => {
+    //     let shelf = []
+    //     console.log(order)
+    //     order.items.forEach((sku) => {
+    //       this.shelfLists.forEach((x) => {
+    //         // console.log(x)
+    //         if(sku.product_number === x.id) {
+    //           // console.log(x.shelf)
+    //           shelf.push(x.shelf)
+    //         }
+    //       })
+    //     })
+    //     order.shelfLists = shelf
+    //     // console.log(order)
+    //     return order
+    //   })
+      
+      // this.orderLists.items.forEach((sku) => {
+      //   console.log(sku.product_number)
+      // })
+      // return 'Test'
+    // }
   },
   computed: {
     orderingList() {
@@ -382,6 +430,9 @@ export default {/* eslint-disable */
         order.orderDate = this.getDate(order.order_date.date)
         return order
       })
+    },
+    shelfLists() {
+      return this.$store.getters.getShelfLists
     }
     // filteredItems() {
     //   if(this.isFilter) {

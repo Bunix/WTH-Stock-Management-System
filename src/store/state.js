@@ -5,5 +5,7 @@ export const state = {
   error: null,
   loading: false,
   barcodeLists: [],
-  invoiceLists: []
+  invoiceLists: [],
+  stockLists: [],
+  shelfLists: []
 }

@@ -119,7 +119,9 @@
           </v-btn>
         </td>
         <td v-else>
-          {{ props.item.shelf }}
+          <v-btn icon @click="setShelf(props.item)">
+            {{ props.item.shelf }}
+          </v-btn>
         </td>
       </template>
 

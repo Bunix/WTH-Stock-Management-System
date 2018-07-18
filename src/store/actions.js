@@ -239,5 +239,53 @@ export const actions = {/* eslint-disable */
       console.error('Error writing document: ', error);
       commit('setError', error.message)
     })
+  },
+  setShelfLists({commit}, payload) {
+    // const orderRef = db.collection('Order_Db')
+    const stockRef = db.collection('In_Stock_Products')
+    stockRef
+      .get()
+      .then(qerySnapshot => {
+        const shelfLists = {}
+        qerySnapshot.docs.forEach((doc) => {
+          shelfLists[doc.id] = doc.data().shelf || '-'
+        })
+        // console.log(shelfLists)
+        commit('setShelfLists', shelfLists)
+      })
+
+    //     payload.forEach((order) => {
+    //       if(order.printStatus === true) {
+    //         const shelfArr = []
+    //         order.items.forEach(item => {
+    //           console.log(item)
+    //           // shelfArr.push(shelfLists[item.product_number])
+    //           // if(item.shelf === undefined) {
+    //           //   console.log('shelf not Founded')
+    //           //   shelfArr.push(shelfLists[item.product_number])
+    //           // }
+    //         })
+    //         // console.log(shelfArr)
+    //         // orderRef
+    //         //   .doc(order.id)
+    //         //   .update({
+    //         //     shelfLists: shelfArr,
+    //         //   })
+    //         //   .then(() => {
+    //         //     console.log('Document successfully updated!')
+    //         //   })
+    //         //   .catch(error => {
+    //         //     console.error('Error update document: ', error)
+    //         //     commit('setError', error.message)
+    //         //   })
+    //       }
+    //     })
+    //   })
+    // console.log(shelfLists)
+    // payload.forEach((order) => {
+    //   order.items.forEach(sku => {
+    //     console.log(sku.product_number)
+    //   })
+    // })
   }
 }
