@@ -103,14 +103,27 @@ export default {
       }
     },
     generateBarcode() {
+      // Reset all barcode in page
       this.barcodeLists.forEach((element, i) => {
         const removebarcode = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
-        if(removebarcode !== null) {
-          removebarcode.innerHTML = ''
-          // console.log(removebarcode)
-        }
-        JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.order_number)
+        removebarcode.innerHTML = ''
+        removebarcode.parentNode.removeChild(removebarcode.parentNode.lastChild)
       })
+
+      // Regenerate barcode with new start position
+      this.barcodeLists.forEach((element, i) => {
+        JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.id)
+        const barcodeElem = document.getElementById('barcode-' + (parseInt(this.barcodeStartPos) + parseInt(i)))
+        // console.log(barcodeElem)        
+        const p = document.createElement('p')
+        const text = document.createTextNode(`${element.brand}: ${element.name} (${element.shelf})`)
+        p.appendChild(text)
+        p.style.fontSize = '10px'
+        
+        barcodeElem.parentNode.appendChild(p)
+      })
+      
+      // Set last barcode position
       this.barcodeLastPos = this.barcodeStartPos
     }
   },

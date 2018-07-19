@@ -106,14 +106,16 @@ export default {
       }
     },
     generateBarcode() {
+      // Reset all barcode in page
       this.barcodeLists.forEach((element, i) => {
         const removebarcode = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
-        if(removebarcode !== null) {
-          removebarcode.innerHTML = ''
-          // console.log(removebarcode)
-        }
+        removebarcode.innerHTML = ''
+      })
+      // Regenerate barcode with new start position
+      this.barcodeLists.forEach((element, i) => {
         JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.order_number)
       })
+      // Set last barcode position
       this.barcodeLastPos = this.barcodeStartPos
     }
   },

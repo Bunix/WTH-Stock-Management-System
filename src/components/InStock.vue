@@ -185,7 +185,7 @@ export default {
   },
   methods: {
     generateBarcode() {
-      console.log(this.selected)
+      // console.log(this.selected)
       this.$store.dispatch('generateBarcodeProduct', this.selected)
     },
     searchQuery() {
