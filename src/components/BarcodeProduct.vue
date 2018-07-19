@@ -119,9 +119,14 @@ export default {
     this.$nextTick(() => {
       this.barcodeLists.forEach((element, i) => {
         JsBarcode(`#barcode-${1 + parseInt(i)}`, element.id)
-        const removebarcode = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
-        var p = document.createElement("p");
-        // removebarcode.parentNode.innerHTML = '<p>Hello</p>'
+        const barcodeElem = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
+        
+        const p = document.createElement('p')
+        const text = document.createTextNode(`${element.brand}: ${element.name} (${element.shelf})`)
+        p.appendChild(text)
+        p.style.fontSize = '10px'
+        
+        barcodeElem.parentNode.appendChild(p)
       })
     })
   }
