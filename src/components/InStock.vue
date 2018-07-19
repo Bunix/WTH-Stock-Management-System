@@ -178,12 +178,41 @@ export default {
       { text: 'Shelf', value: 'shelf' }
     ]
   }),
+  created() {
+    // Add barcode scan listener and pass the callback function
+    // console.log('init scanner')
+    this.$barcodeScanner.init(this.onBarcodeScanned)
+
+    // console.log(this.$barcodeScanner)
+  },
+  // destroyed() {
+  //   // Remove listener when component is destroyed
+  //   console.log('Remove listener')
+  //   this.$barcodeScanner.destroy()
+  // },
   firestore () {
     return {
       inStockProducts: db.collection('In_Stock_Products')
     }
   },
   methods: {
+    onBarcodeScanned(barcode) {
+      console.log(barcode)
+      /* eslint-disable */
+      if(!this.isScanMode) {
+        this.isAlert = true
+        return
+      }
+
+      this.inStockProducts.forEach((product, i) => {
+        product.id === barcode ? this.selected.push(this.inStockProducts[i]) : null
+      })
+    },
+    // // Reset to the last barcode before hitting enter (whatever anything in the input box)
+    // resetBarcode() {
+    //   const barcode = this.$barcodeScanner.getPreviousCode()
+    //   // do something...
+    // },
     generateBarcode() {
       // console.log(this.selected)
       this.$store.dispatch('generateBarcodeProduct', this.selected)

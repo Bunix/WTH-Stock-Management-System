@@ -237,10 +237,10 @@ export default {/* eslint-disable */
     // Add barcode scan listener and pass the callback function
     this.$barcodeScanner.init(this.onBarcodeScanned)
   },
-  destroyed() {
-    // Remove listener when component is destroyed
-    this.$barcodeScanner.destroy()
-  },
+  // destroyed() {
+  //   // Remove listener when component is destroyed
+  //   this.$barcodeScanner.destroy()
+  // },
   firestore() {
     return {
       orderLists: db.collection('Order_Db'),
@@ -299,6 +299,7 @@ export default {/* eslint-disable */
     },
     onBarcodeScanned(barcode) {
       /* eslint-disable */
+      console.log(barcode)
       if(!this.isScanMode) {
         this.isAlert = true
         return

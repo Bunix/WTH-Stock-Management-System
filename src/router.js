@@ -44,8 +44,8 @@ const routerOptions = [
     component: 'BarcodeProduct'
   },
   {
-    path: '/test2',
-    component: 'Test2'
+    path: '/invoice-temp',
+    component: 'InvoiceTemplate'
   }
 ]
 
