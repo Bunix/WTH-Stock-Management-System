@@ -145,7 +145,7 @@
                     <td align="right" bgcolor="#FFFFFF">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (7/100)).toFixed(2)}` }}</td>
                   </tr>
                   <tr>
-                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee"></td>
+                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee">{{ bahtOnly('1541.00') }}</td>
                     <td colspan="2" bgcolor="#eee"><b>Grand Total</b></td>
                     <td bgcolor="#eee">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (107/100)).toFixed(2)}` }}</td>
                   </tr>
@@ -202,6 +202,7 @@
         </tbody>
       </table>
     </div>
+    <v-btn @click="bahtOnly('178599.11')">click</v-btn>
   </v-container>
 </template>
 
@@ -213,6 +214,37 @@ export default {
       invoiceLists: this.$store.getters.getInvoiceLists,
       orderNumber: 'GLIV1807-002',
       orderDate: '4-Jul-18'
+    }
+  },
+  methods: {
+    bahtOnly(numStr) {
+      console.log(numStr)
+      const numText = ['หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า', 'สิบ']
+      const unitText = ['สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน']
+
+      const [integer] = numStr.match(/.*(?=\.)/g)
+      const [decimal] = numStr.match(/(?<=\.)[^.]*$/g);
+      const maxUnit = integer.length - 2
+
+      return [...integer].map((n, i) => {
+        const num =  numText[parseInt(n - 1)] !== undefined ? numText[parseInt(n - 1)] : ''
+        const unit = maxUnit - i >= 0  ? unitText[maxUnit - i] : ''
+        if(parseInt(n) === 1 && i === maxUnit) {
+          return num !== '' ? unit : ''  
+        }
+        if(parseInt(n) === 1 && i === integer.length - 1 && parseInt(integer[maxUnit]) !== 0) {
+          return 'เอ็ด'
+        }
+        if(parseInt(n) === 1 && integer[i+1] === maxUnit) {
+          return num !== '' ? num + unit : ''
+        }
+        if(parseInt(n) === 2 && i === maxUnit) {
+          return num !== '' ? 'ยี่' + unit : ''  
+        }
+        return num !== '' ? num + unit : ''
+      }).join('')
+
+      // console.log(x)
     }
   }
 }
