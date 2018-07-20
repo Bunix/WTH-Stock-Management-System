@@ -1,6 +1,6 @@
 <template>
   <v-container id="invoice-template">
-    <div v-for="invoice in invoiceLists" :key="invoice.id">
+    <div v-for="invoice in invoiceLists" :key="invoice.id" style="height: 1688px">
       <table width="798" cellspacing="0" cellpadding="5" border="1" style="border-collapse: collapse" bordercolor="#000000">
         <tbody>
           <tr>
@@ -97,41 +97,23 @@
           </tr>
           <tr>
             <td align="center" bgcolor="#FFFFFF">
-              <table width="98%" border="0" cellpadding="5" cellspacing="1" style="background-color:#A2A2A2">
+              <table width="98%" style="background-color:#A2A2A2" cellpadding="5" cellspacing="1">
                 <tbody>
                   <tr>
-                    <td width="16%" bgcolor="#FFFFFF">會員名稱:</td>
-                    <td width="26%" bgcolor="#FFFFFF"> อดิศร </td>
-                    <td width="14%" bgcolor="#FFFFFF">連絡電話:</td>
-                    <td width="15%" bgcolor="#FFFFFF">T:
-                      <br> M: 0845434257</td>
-                    <td width="14%" bgcolor="#FFFFFF">訂購時間:</td>
-                    <td width="15%" bgcolor="#FFFFFF"> 2018-06-18 12:13:04 </td>
+                    <td width="40" bgcolor="#FFFFFF"><b>No.</b></td>
+                    <td width="250" bgcolor="#FFFFFF"><b>Description</b></td>
+                    <td width="40" bgcolor="#FFFFFF"><b>Color</b></td>
+                    <td width="40" bgcolor="#FFFFFF"><b>Price / Unit (THB)</b></td>
+                    <td width="40" bgcolor="#FFFFFF"><b>Qty</b></td>
+                    <td width="40" bgcolor="#FFFFFF"><b>Total Amount (THB)</b></td>
                   </tr>
-                  <tr>
-                    <td bgcolor="#FFFFFF">統一編號:</td>
-                    <td bgcolor="#FFFFFF"> </td>
-                    <td bgcolor="#FFFFFF">付款方式：</td>
-                    <td bgcolor="#FFFFFF">Credit card</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td bgcolor="#FFFFFF">收件人 :</td>
-                    <td bgcolor="#FFFFFF">อดิศร มานุจำ</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td bgcolor="#FFFFFF">配送地址:</td>
-                    <td bgcolor="#FFFFFF">10130 , สมุทรปราการ/Samut Prakarn พระประแดง/Phra Pradaeng,เทศบาลเมืองพระประแดง/Talat 119/14 สุขสวัสดิ์37/3
-                      ต.บางพึ่ง อ.พระประแดง จ.สมุทรปราการ10130</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
-                    <td bgcolor="#FFFFFF">&nbsp;</td>
+                  <tr v-for="(item, index) in invoice.items" :key="index">
+                    <td bgcolor="#FFFFFF">{{ index + 1 }}</td>
+                    <td bgcolor="#FFFFFF">{{ `${item.product_manufacturer}: ${item.product_name}` }}</td>
+                    <td bgcolor="#FFFFFF">{{ item.product_color }}</td>
+                    <td bgcolor="#FFFFFF">{{ item.product_price }}</td>
+                    <td bgcolor="#FFFFFF">{{ item.product_quantity }}</td>
+                    <td bgcolor="#FFFFFF">{{ item.product_price * item.product_quantity }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -142,25 +124,30 @@
               <table width="98%" style="background-color:#A2A2A2" cellpadding="5" cellspacing="1">
                 <tbody>
                   <tr>
-                    <td width="23" bgcolor="#FFFFFF">No.</td>
-                    <td width="158" bgcolor="#FFFFFF">品牌</td>
-                    <td colspan="3" bgcolor="#FFFFFF">商品名稱</td>
-                    <td colspan="2" bgcolor="#FFFFFF">商品編號</td>
-                    <td width="40" bgcolor="#FFFFFF">數量</td>
-                    <td width="80" bgcolor="#FFFFFF" align="right">單價</td>
-                    <td width="80" bgcolor="#FFFFFF" align="right">小計</td>
+                    <td width="550" colspan="7" rowspan="5" bgcolor="#FFFFFF"></td>
+                    <td colspan="2" bgcolor="#FFFFFF"><b>Total Amount</b></td>
+                    <td width="80" align="right" bgcolor="#FFFFFF">{{ `฿${parseFloat(invoice.total_amount).toFixed(2)}` }}</td>
                   </tr>
                   <tr>
-                    <td bgcolor="#FFFFFF">1</td>
-                    <td bgcolor="#FFFFFF">TANAX</td>
-                    <td colspan="3" bgcolor="#FFFFFF"> YANASHIRO x TANAX Shark Mirror
-
-
-                    </td>
-                    <td colspan="2" bgcolor="#FFFFFF"> AOS-104-BB</td>
-                    <td bgcolor="#FFFFFF">1</td>
-                    <td align="right" bgcolor="#FFFFFF">฿3,075</td>
-                    <td align="right" bgcolor="#FFFFFF">฿3,075</td>
+                    <td colspan="2" bgcolor="#FFFFFF"><b>Coupon Discount</b></td>
+                    <td align="right" bgcolor="#FFFFFF">{{ invoice.coupon }}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" bgcolor="#FFFFFF"><b>Freight</b></td>
+                    <td align="right" bgcolor="#FFFFFF">{{ invoice.Freight }}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" bgcolor="#FFFFFF"><b>Net Amount</b></td>
+                    <td align="right" bgcolor="#FFFFFF">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) - invoice.coupon).toFixed(2)}` }}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" bgcolor="#FFFFFF"><b>Value Added Tax 7%</b></td>
+                    <td align="right" bgcolor="#FFFFFF">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (7/100)).toFixed(2)}` }}</td>
+                  </tr>
+                  <tr>
+                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee"></td>
+                    <td colspan="2" bgcolor="#eee"><b>Grand Total</b></td>
+                    <td bgcolor="#eee">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (107/100)).toFixed(2)}` }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -168,36 +155,48 @@
           </tr>
           <tr>
             <td align="center" bgcolor="#FFFFFF">
-              <table width="98%" style="background-color:#A2A2A2" cellpadding="5" cellspacing="1">
-                <tbody>
-                  <tr>
-                    <td width="550" colspan="7" rowspan="1" bgcolor="#FFFFFF">&nbsp;備註 </td>
-                    <td colspan="2" bgcolor="#FFFFFF">商品費用合計</td>
-                    <td width="80" align="right" bgcolor="#FFFFFF">&nbsp;฿3,075</td>
-                  </tr>
-                  <tr>
-                    <td width="550" colspan="7" rowspan="5" bgcolor="#FFFFFF">&nbsp; </td>
-                    <td colspan="2" bgcolor="#FFFFFF">運費</td>
-                    <td align="right" bgcolor="#FFFFFF"> ฿0</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" bgcolor="#FFFFFF">手續費</td>
-                    <td align="right" bgcolor="#FFFFFF"> ฿0 </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" bgcolor="#FFFFFF">折扣</td>
-                    <td align="right" bgcolor="#FFFFFF"> -฿0 </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" bgcolor="#FFFFFF">總計</td>
-                    <td align="right" bgcolor="#FFFFFF">&nbsp;฿3,075 </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" bgcolor="#FFFFFF"></td>
-                    <td bgcolor="#FFFFFF"></td>
-                  </tr>
-                </tbody>
-              </table>
+              <div style="margin: 0; width: 100%;">
+                <template>
+                  <v-container grid-list-md text-xs-center>
+                    <v-layout row wrap>
+                      <v-flex xs12 style="text-align: left">
+                        <h4 style="line-height: 1.5; margin-bottom: 0.5rem;">Remark:</h4>
+                        <ol style="padding-left: 1rem">
+                          <li>
+                            Defective items MUST BE reported within 7 days after receiving the package (and in the original packaging, if possible).
+                            You must inform us what the defect is and provide us your order number. WE WILL NOT ACCEPT ANY REPORT AFTER 7 DAYS UPON RECEIVE.
+                          </li>
+                          <li>
+                            Please feel free to contact us with any comments, questions or suggestions that you may have, we will be happy to assist you.
+                          </li>
+                          <li>
+                            For further information on the process, please see our Return Rolicy
+                          </li>
+                        </ol>
+                        <h4 style="line-height: 1.5; padding: 2rem 0 0.5rem">Received the above merchandises in good order and condition</h4>
+                        <hr>
+                        <v-container grid-list-md text-xs-center style="height: 100px">
+                          <v-layout row wrap>
+                            <v-flex xs6 class="text-xs-left">
+                              <h5 style="line-height: 1.5; padding: 0.5rem 0">Received by:</h5>
+                            </v-flex>
+                            <v-flex xs6 class="text-xs-left">
+                              <h5 style="line-height: 1.5; padding: 0.5rem 0">Received by:</h5>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </template>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p class="text-xs-center">
+                Thank you for you bussiness.
+              </p>
             </td>
           </tr>
         </tbody>

@@ -145,7 +145,7 @@ export const actions = {/* eslint-disable */
     payload.forEach( order => {
       invoiceLists.push(order)
     })
-    console.log(invoiceLists)
+    // console.log(invoiceLists)
     commit('setInvoiceLists', invoiceLists)
     router.push('/invoice')
   },
