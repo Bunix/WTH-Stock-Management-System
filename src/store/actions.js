@@ -6,6 +6,7 @@ import db from '../firebaseInit'
 // Set database collection name
 const orderDb = 'Order_Db'
 const inStockDb = 'In_Stock_Products'
+const historyOrderDb = 'History_Order'
 
 export const actions = {/* eslint-disable */
   userSignUp ({commit}, payload) {
@@ -226,8 +227,9 @@ export const actions = {/* eslint-disable */
 
   },
   setShelf({commit}, payload) {
+
     const refInstock = db.collection(inStockDb)
-    let refInstockDoc = refInstock.doc(payload.id)
+    const refInstockDoc = refInstock.doc(payload.id)
 
     refInstockDoc
     .set({
@@ -293,6 +295,55 @@ export const actions = {/* eslint-disable */
     // })
   },
   setToHistoryOrder({commit}, payload) {
-    console.log(payload)
+    const refOrder = db.collection(orderDb)
+
+    const refInstock = db.collection(inStockDb)
+
+    const refHistoryOrder = db.collection(historyOrderDb);
+
+    [...payload].map( order => {
+
+      // Delete Order 
+      refOrder.doc(order.id)
+        .delete()
+        .then(function() {
+          console.log("Document successfully deleted!")
+        }).catch(function(error) {
+          console.error("Error removing document: ", error)
+        })
+
+    // Update Instock DB
+    order.items.forEach((item) => {
+      // console.log(item.product_number)
+      refInstock
+      .doc(item.product_number)
+      .get()
+      .then(doc => {
+        // console.log('Document data:', doc.data())
+        const newQty = parseInt(doc.data().quantity) - parseInt(item.quantity)
+        console.log(parseInt(item.quantity))
+        console.log(doc.data().quantity)
+        console.log(newQty)
+        refInstock
+        .doc(item.product_number)
+        .update({
+          quantity: parseInt(doc.data().quantity) - parseInt(item.quantity)
+        })
+        .then(function() {
+          console.log('Document successfully Updated!')
+        })
+        .catch(error => {
+          console.error('Error writing document: ', error)
+          commit('setError', error.message)
+        })
+      })
+    })
+
+    // Set Shipped order to new DB
+      refHistoryOrder
+        .doc(order.id)
+        .set(order)
+        console.log(order)
+    })
   }
 }
