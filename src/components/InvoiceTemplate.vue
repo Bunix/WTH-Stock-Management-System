@@ -145,7 +145,7 @@
                     <td align="right" bgcolor="#FFFFFF">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (7/100)).toFixed(2)}` }}</td>
                   </tr>
                   <tr>
-                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee">{{ bahtOnly('1541.00') }}</td>
+                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee">{{ bahtOnly('1541.11') }}</td>
                     <td colspan="2" bgcolor="#eee"><b>Grand Total</b></td>
                     <td bgcolor="#eee">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (107/100)).toFixed(2)}` }}</td>
                   </tr>
@@ -218,33 +218,59 @@ export default {
   },
   methods: {
     bahtOnly(numStr) {
-      console.log(numStr)
-      const numText = ['หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า', 'สิบ']
-      const unitText = ['สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน']
+      // console.log(numStr)
+      const textNumber = ['หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า', 'สิบ']
+      const textUnit = ['สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน']
 
       const [integer] = numStr.match(/.*(?=\.)/g)
-      const [decimal] = numStr.match(/(?<=\.)[^.]*$/g);
+      const [decimal] = numStr.match(/(?<=\.)[^.]*$/g)
       const maxUnit = integer.length - 2
 
-      return [...integer].map((n, i) => {
-        const num =  numText[parseInt(n - 1)] !== undefined ? numText[parseInt(n - 1)] : ''
-        const unit = maxUnit - i >= 0  ? unitText[maxUnit - i] : ''
-        if(parseInt(n) === 1 && i === maxUnit) {
+      const fullTextNumber =  [...integer].map((number, i) => {
+        const n = parseInt(number)
+        const num =  textNumber[n - 1] !== undefined ? textNumber[n - 1] : ''
+        const unit = maxUnit - i >= 0  ? textUnit[maxUnit - i] : ''
+        if(n === 1 && i === maxUnit) {
           return num !== '' ? unit : ''  
         }
-        if(parseInt(n) === 1 && i === integer.length - 1 && parseInt(integer[maxUnit]) !== 0) {
+        if(n === 1 && i === integer.length - 1 && parseInt(integer[maxUnit]) !== 0) {
           return 'เอ็ด'
         }
-        if(parseInt(n) === 1 && integer[i+1] === maxUnit) {
+        if(n === 1 && integer[i+1] === maxUnit) {
           return num !== '' ? num + unit : ''
         }
-        if(parseInt(n) === 2 && i === maxUnit) {
+        if(n === 2 && i === maxUnit) {
           return num !== '' ? 'ยี่' + unit : ''  
         }
         return num !== '' ? num + unit : ''
       }).join('')
 
-      // console.log(x)
+      const fullUnitText = [...decimal].map((number, i) => {
+        const n = parseInt(number)
+        if(n === 1 && i == 0) {
+          return 'สิบ'
+        }
+        if(n === 2 && i == 0) {
+          return 'ยี่สิบ'
+        }
+        if(i === 0) {
+          return textNumber[n - 1] !== undefined ? `${textNumber[n - 1]}สิบ` : ''
+        }
+        if(n === 0 && i == 1) {
+          return ''
+        }
+        if(n === 1 && i == 1) {
+          return 'เอ็ด'
+        }
+        if(n === 0) {
+          return 'ศูนย์'
+        }
+        if(i == 1) {
+          return textNumber[n - 1] !== undefined ? `${textNumber[n - 1]}` : ''
+        }
+      }).join('')
+
+      return `${fullTextNumber}บาท${fullUnitText === 'ศูนย์ศูนย์' ? 'ถ้วน' : fullUnitText + 'สตางค์'}`
     }
   }
 }
@@ -254,9 +280,11 @@ export default {
   p {
     margin-bottom: 0; 
   }
+
   td {
     padding: 1rem;
   }
+
   .font-red {
     color: rgb(230, 49, 49)
   }
