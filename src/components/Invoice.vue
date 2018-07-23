@@ -12,7 +12,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn color="primary" @click.native="print('updateOrder')">
+      <v-btn color="primary" @click.native="print('setToHistoryOrder')">
         <v-icon left>print</v-icon> Print & Update Order
       </v-btn>
       <v-btn @click.native="print">Print</v-btn>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import html2canvas from 'html2canvas'
+// import html2canvas from 'html2canvas'
 import InvoiceTemplate from './InvoiceTemplate'
 /* eslint-disable */
 export default {
@@ -48,30 +48,22 @@ export default {
     },
     print(printOption) {
       // Render data as image and attach to new window then call print function
-      html2canvas(document.querySelector('#print-area'), {
-        dpi: 150,
-        width: 1240,
-        height: '100%',
-        logging: false
-      })
-      .then(canvas => {
-        const myWindow = window.open()
-        myWindow.document.body.appendChild(canvas)
-        myWindow.print()
-        myWindow.close()
-      })
-      if(printOption === 'updateOrder') {
-        this.$store.dispatch('updateOrder', this.invoiceLists)
+      // html2canvas(document.querySelector('#print-area'), {
+      //   dpi: 150,
+      //   width: 1240,
+      //   height: '100%',
+      //   logging: false
+      // })
+      // .then(canvas => {
+      //   const myWindow = window.open()
+      //   myWindow.document.body.appendChild(canvas)
+      //   myWindow.print()
+      //   myWindow.close()
+      // })
+      if(printOption === 'setToHistoryOrder') {
+        this.$store.dispatch('setToHistoryOrder', this.invoiceLists)
       }
     }
-  },
-  mounted() {
-    // Generate barcode when element is render.
-    this.$nextTick(() => {
-      // this.barcodeLists.forEach((element, i) => {
-      //   JsBarcode(`#barcode-${this.barcodeStartPos + i}`, element.basicInformation.orderNumber)
-      // })
-    })
   }
 }
 </script>

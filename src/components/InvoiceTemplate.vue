@@ -130,7 +130,7 @@
                   </tr>
                   <tr>
                     <td colspan="2" bgcolor="#FFFFFF"><b>Coupon Discount</b></td>
-                    <td align="right" bgcolor="#FFFFFF">{{ invoice.coupon }}</td>
+                    <td align="right" bgcolor="#FFFFFF">{{ parseFloat(invoice.coupon).toFixed(2) }}</td>
                   </tr>
                   <tr>
                     <td colspan="2" bgcolor="#FFFFFF"><b>Freight</b></td>
@@ -145,7 +145,7 @@
                     <td align="right" bgcolor="#FFFFFF">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (7/100)).toFixed(2)}` }}</td>
                   </tr>
                   <tr>
-                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee">{{ bahtOnly('1541.11') }}</td>
+                    <td width="550" colspan="7" rowspan="1" bgcolor="#eee">{{ bahtOnly(`${(parseFloat(invoice.total_amount).toFixed(2) * (107/100)).toFixed(2)}`) }}</td>
                     <td colspan="2" bgcolor="#eee"><b>Grand Total</b></td>
                     <td bgcolor="#eee">{{ `฿${(parseFloat(invoice.total_amount).toFixed(2) * (107/100)).toFixed(2)}` }}</td>
                   </tr>
@@ -202,7 +202,6 @@
         </tbody>
       </table>
     </div>
-    <v-btn @click="bahtOnly('178599.11')">click</v-btn>
   </v-container>
 </template>
 

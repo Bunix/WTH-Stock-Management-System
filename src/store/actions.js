@@ -291,5 +291,8 @@ export const actions = {/* eslint-disable */
     //     console.log(sku.product_number)
     //   })
     // })
+  },
+  setToHistoryOrder({commit}, payload) {
+    console.log(payload)
   }
 }
