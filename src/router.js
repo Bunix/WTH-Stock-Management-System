@@ -15,7 +15,7 @@ const routerOptions = [
     component: 'Invoice'
   },
   {
-    path: '/historyorder',
+    path: '/history',
     component: 'HistoryOrder'
   },
   {
