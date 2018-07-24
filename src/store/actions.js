@@ -296,54 +296,64 @@ export const actions = {/* eslint-disable */
   },
   setToHistoryOrder({commit}, payload) {
     const refOrder = db.collection(orderDb)
-
     const refInstock = db.collection(inStockDb)
-
     const refHistoryOrder = db.collection(historyOrderDb);
 
     [...payload].map( order => {
-
       // Delete Order 
       refOrder.doc(order.id)
         .delete()
         .then(function() {
-          console.log("Document successfully deleted!")
+          console.log(`${order.id}: successfully deleted!`)
         }).catch(function(error) {
           console.error("Error removing document: ", error)
         })
 
-    // Update Instock DB
-    order.items.forEach((item) => {
-      // console.log(item.product_number)
-      refInstock
-      .doc(item.product_number)
-      .get()
-      .then(doc => {
-        // console.log('Document data:', doc.data())
-        const newQty = parseInt(doc.data().quantity) - parseInt(item.quantity)
-        console.log(parseInt(item.quantity))
-        console.log(doc.data().quantity)
-        console.log(newQty)
-        refInstock
-        .doc(item.product_number)
-        .update({
-          quantity: parseInt(doc.data().quantity) - parseInt(item.quantity)
-        })
-        .then(function() {
-          console.log('Document successfully Updated!')
-        })
-        .catch(error => {
-          console.error('Error writing document: ', error)
-          commit('setError', error.message)
-        })
-      })
-    })
+      // Update Instock DB
+      order.items.forEach((item) => {
+        // console.log(item.product_number)
+        const refInstockItem = refInstock.doc(item.product_number)
 
-    // Set Shipped order to new DB
+        refInstockItem
+          .get()
+          .then(doc => {
+            const newQty = parseInt(doc.data().quantity) - parseInt(item.product_quantity)
+            console.log(newQty)
+            if(newQty === 0) {
+              refInstockItem
+              .delete()
+              .then(function() {
+                console.log(`${item.product_number}: successfully deleted!`)
+              }).catch(function(error) {
+                console.error("Error removing document: ", error)
+              })
+            } else {
+              refInstockItem
+              .update({
+                quantity: newQty
+              })
+              .then(function() {
+                console.log(`${item.product_number}: successfully updated!`)
+              })
+              .catch(error => {
+                console.error('Error updating document: ', error)
+                commit('setError', error.message)
+              })
+            }
+          })
+      })
+
+      // Set Shipped order to new DB
       refHistoryOrder
         .doc(order.id)
         .set(order)
-        console.log(order)
+        .then(function() {
+          console.log(`${order.id}: successfully added!`)
+        })
+        .catch(error => {
+          console.error('Error seting document: ', error)
+          commit('setError', error.message)
+        })
     })
   }
 }

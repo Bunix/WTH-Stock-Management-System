@@ -63,11 +63,6 @@
         <v-btn icon>
           <v-icon>notifications</v-icon>
         </v-btn>
-        <v-btn icon large>
-          <v-avatar size="32px" tile>
-            <img src="https://vuetifyjs.com/static/doc-images/logo.svg" alt="Vuetify">
-          </v-avatar>
-        </v-btn>
         <span class="hidden-sm-and-down" v-text="userEmail"></span>
         <v-btn flat @click="userSignOut" v-if="isAuthenticated">
           <v-icon left>exit_to_app</v-icon>
