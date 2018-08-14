@@ -110,7 +110,7 @@
                   <tr v-for="(item, index) in invoice.items" :key="index">
                     <td bgcolor="#FFFFFF">{{ index + 1 }}</td>
                     <td bgcolor="#FFFFFF">{{ `${item.product_manufacturer}: ${item.product_name}` }}</td>
-                    <td bgcolor="#FFFFFF">{{ item.product_color }}</td>
+                    <td bgcolor="#FFFFFF">{{ item.product_option_name }}</td>
                     <td bgcolor="#FFFFFF">{{ item.product_price }}</td>
                     <td bgcolor="#FFFFFF">{{ item.product_quantity }}</td>
                     <td bgcolor="#FFFFFF">{{ item.product_price * item.product_quantity }}</td>
