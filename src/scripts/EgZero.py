@@ -48,4 +48,20 @@ class EgZero:
     ordering_number = self.browser.find_elements_by_xpath('/html/body/pre')
     
     return list(map(lambda number: ast.literal_eval(number.text), ordering_number))
+
+  def getOrderData(self, orderNumber):
+    self.browser.get('http://209.58.164.167/api/orders/getOrdersInfo?order_number={}'.format(orderNumber))
+    self.browser.implicitly_wait(30)
+
+    # wait until json data loaded.
+    wait = WebDriverWait(self.browser, 100)
+    wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/pre')))
+
+    ordering_data = self.browser.find_elements_by_xpath('/html/body/pre')
+    
+    result = ''
+    for x in ordering_data:
+      result = json.loads(x.text)
+
+    return result[0]
       

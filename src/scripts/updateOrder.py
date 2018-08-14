@@ -6,22 +6,37 @@ from pprint import pprint
 from FirestoreDb import FirestoreDb
 from EgZero import EgZero
 import numpy as np
+import ast
 
 # Use a service account of Firesstore
-order_db = FirestoreDb('Order_Db')
-orderNumberLists = order_db.getDocsId()
+# order_db = FirestoreDb('Order_Db')
+# orderNumberLists = order_db.getDocsId()
 
+
+# print(orderNumberLists)
 # Get ordering data from Eg-Zero
 eg_zero_db = EgZero('faisal.j@webike.co.th', '123456789Za')
-orderingNumberLists = eg_zero_db.getOrderNumber(6)
+db = FirestoreDb('Order_Db')
+# orderingNumberLists = eg_zero_db.getOrderNumber(6)
 
 # Get only new ordering number by filter
-result = np.setdiff1d(orderingNumberLists[0], orderNumberLists)
-print(result)
+# results = np.setdiff1d(orderingNumberLists[0], orderNumberLists)
+# print(results)
 # print('------------------------------------')
 
-# for doc in docs:
-#     print(doc)
+results = ['WTH180630G0155', 'WTH180703G0131']
+data = list(map(lambda result: eg_zero_db.getOrderData(result), results))
+# x = list(map(lambda result: eg_zero_db.getOrderData(result), results))
+# print(eg_zero_db.getOrderListsData(result))
+# print('x is:', x[0])
+
+
+
+for doc in data:
+  order_number = doc.get('order_number', '')
+  # print(x)
+  # print('-------------')
+  db.setData(order_number, doc)
 
 # # Open new data.json and upload to firebase
 # with open('data.json') as f:
