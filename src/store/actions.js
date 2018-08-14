@@ -63,6 +63,8 @@ export const actions = {/* eslint-disable */
     let products = {}
     const ref = db.collection(orderDb)
     const refInstock = db.collection(inStockDb)
+
+    console.log(payload)
     
     payload.forEach(element => {
 
