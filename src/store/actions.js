@@ -4,8 +4,9 @@ import db from '../firebaseInit'
 // import { db } from '../main'
 
 // Set database collection name
-const orderDb = 'Finished_Order'
+const orderDb = 'Order_Db'
 const inStockDb = 'In_Stock_Products'
+const historyOrderDb = 'History_Order'
 
 export const actions = {/* eslint-disable */
   userSignUp ({commit}, payload) {
@@ -53,6 +54,10 @@ export const actions = {/* eslint-disable */
     commit('setBarcodeLists', payload)
     router.push('/barcode')
   },
+  generateBarcodeProduct({commit}, payload) {
+    commit('setBarcodeLists', payload)
+    router.push('/barcodeproduct')
+  },
   updateStock({commit}, payload) {
     
     let products = {}
@@ -61,63 +66,76 @@ export const actions = {/* eslint-disable */
     
     payload.forEach(element => {
 
-      let skuLists = Object.keys(element.checkOutInformation)
+      // let skuLists = Object.keys(element.checkOutInformation)
+      let itemLists = element.items
+      // console.log(itemLists)
+      let skuLists = itemLists.map((order) => {
+        return [order.product_number, order.product_name, order.product_quantity, order.product_manufacturer]
+      })
+
+      // console.log(skuLists)
 
       skuLists.forEach((sku) => {
-        if(products[sku] === undefined) {
-          products[sku] = {
-            name: element['checkOutInformation'][sku].name,
-            point: element['checkOutInformation'][sku].point,
-            price: element['checkOutInformation'][sku].price,
-            quantity: element['checkOutInformation'][sku].quantity
+        // console.log(sku[3])
+        if(products[sku[0]] === undefined) {
+          
+          products[sku[0]] = {
+            name: sku[1],
+            // point: element['checkOutInformation'][sku].point,
+            // price: element['checkOutInformation'][sku].price,
+            brand: sku[3],
+            quantity: sku[2]
           }
         } else {
-          products[sku].quantity += element['checkOutInformation'][sku].quantity
+          products[0].quantity += sku[2]
         }
       })
 
       ref
-      .doc(element.id)
-      .update({
-        printStatus: true,
-        inStock: true
-      }).then(() => {
-        console.log('Update finised')
-      }).catch(error => {
-        console.error('Error writing document: ', error);
-      })
+        .doc(element.id)
+        .update({
+          printStatus: true,
+          inStock: true
+        }).then(() => {
+          console.log('Update finised')
+        }).catch(error => {
+          console.error('Error writing document: ', error);
+        })
     })
 
+    console.log(products)
     
     for(let key in products) {
+      // console.log(key)
 
       let refInstockDoc = refInstock.doc(key)
+      // console.log(products)
       
       refInstockDoc
-      .get()
-      .then(doc => {
-        if(doc.exists) {
-          console.log('Document data:', doc.data())
-          refInstockDoc
-          .update({
-            quantity: products[key].quantity + doc.data().quantity
-          })
-        } else {
-          refInstockDoc
-          .set({
-            name: products[key].name,
-            point: products[key].point,
-            price: products[key].price,
-            quantity: products[key].quantity
-          })
-          .then(function() {
-            console.log('Document successfully written!');
-          })
-          .catch(error => {
-            console.error('Error writing document: ', error);
-            commit('setError', error.message)
-          })
-        }
+        .get()
+        .then(doc => {
+          if(doc.exists) {
+            console.log('Document data:', doc.data())
+            refInstockDoc
+            .update({
+              quantity: parseInt(products[key].quantity) + parseInt(doc.data().quantity)
+            })
+          } else {
+            refInstockDoc
+            .set({
+              name: products[key].name,
+              // point: products[key].point,
+              brand: products[key].brand,
+              quantity: products[key].quantity
+            })
+            .then(function() {
+              console.log('Document successfully written!');
+            })
+            .catch(error => {
+              console.error('Error writing document: ', error);
+              commit('setError', error.message)
+            })
+          }
       })
     }
     router.push('/')
@@ -174,18 +192,168 @@ export const actions = {/* eslint-disable */
 
     payload.forEach(element => {
       ref
-      .doc(element.id)
-      .update({
-        printStatus: !element.printStatus,
-      })
-      .then(() => {
-        console.log('Document successfully updated!')
-      })
-      .catch(error => {
-        console.error('Error update document: ', error)
-        commit('setError', error.message)
-      })
+        .doc(element.id)
+        .update({
+          printStatus: !element.printStatus,
+        })
+        .then(() => {
+          console.log('Document successfully updated!')
+        })
+        .catch(error => {
+          console.error('Error update document: ', error)
+          commit('setError', error.message)
+        })
     })
 
+  },
+  setPaidDate({commit}, payload) {
+
+    const ref = db.collection(orderDb)
+
+    payload.forEach(element => {
+      ref
+        .doc(element.id)
+        .update({
+          paidDate: element.paidDate,
+        })
+        .then(() => {
+          console.log('Document successfully updated!')
+        })
+        .catch(error => {
+          console.error('Error update document: ', error)
+          commit('setError', error.message)
+        })
+    })
+
+  },
+  setShelf({commit}, payload) {
+
+    const refInstock = db.collection(inStockDb)
+    const refInstockDoc = refInstock.doc(payload.id)
+
+    refInstockDoc
+    .set({
+      name: payload.name,
+      brand: payload.brand,
+      quantity: payload.quantity,
+      shelf: payload.shelf
+    })
+    .then(function() {
+      console.log('Document successfully written!');
+    })
+    .catch(error => {
+      console.error('Error writing document: ', error);
+      commit('setError', error.message)
+    })
+  },
+  setShelfLists({commit}, payload) {
+    // const orderRef = db.collection('Order_Db')
+    const stockRef = db.collection('In_Stock_Products')
+    stockRef
+      .get()
+      .then(qerySnapshot => {
+        const shelfLists = {}
+        qerySnapshot.docs.forEach((doc) => {
+          shelfLists[doc.id] = doc.data().shelf || '-'
+        })
+        // console.log(shelfLists)
+        commit('setShelfLists', shelfLists)
+      })
+
+    //     payload.forEach((order) => {
+    //       if(order.printStatus === true) {
+    //         const shelfArr = []
+    //         order.items.forEach(item => {
+    //           console.log(item)
+    //           // shelfArr.push(shelfLists[item.product_number])
+    //           // if(item.shelf === undefined) {
+    //           //   console.log('shelf not Founded')
+    //           //   shelfArr.push(shelfLists[item.product_number])
+    //           // }
+    //         })
+    //         // console.log(shelfArr)
+    //         // orderRef
+    //         //   .doc(order.id)
+    //         //   .update({
+    //         //     shelfLists: shelfArr,
+    //         //   })
+    //         //   .then(() => {
+    //         //     console.log('Document successfully updated!')
+    //         //   })
+    //         //   .catch(error => {
+    //         //     console.error('Error update document: ', error)
+    //         //     commit('setError', error.message)
+    //         //   })
+    //       }
+    //     })
+    //   })
+    // console.log(shelfLists)
+    // payload.forEach((order) => {
+    //   order.items.forEach(sku => {
+    //     console.log(sku.product_number)
+    //   })
+    // })
+  },
+  setToHistoryOrder({commit}, payload) {
+    const refOrder = db.collection(orderDb)
+    const refInstock = db.collection(inStockDb)
+    const refHistoryOrder = db.collection(historyOrderDb);
+
+    [...payload].map( order => {
+      // Delete Order 
+      refOrder.doc(order.id)
+        .delete()
+        .then(function() {
+          console.log(`${order.id}: successfully deleted!`)
+        }).catch(function(error) {
+          console.error("Error removing document: ", error)
+        })
+
+      // Update Instock DB
+      order.items.forEach((item) => {
+        // console.log(item.product_number)
+        const refInstockItem = refInstock.doc(item.product_number)
+
+        refInstockItem
+          .get()
+          .then(doc => {
+            const newQty = parseInt(doc.data().quantity) - parseInt(item.product_quantity)
+            console.log(newQty)
+            if(newQty === 0) {
+              refInstockItem
+              .delete()
+              .then(function() {
+                console.log(`${item.product_number}: successfully deleted!`)
+              }).catch(function(error) {
+                console.error("Error removing document: ", error)
+              })
+            } else {
+              refInstockItem
+              .update({
+                quantity: newQty
+              })
+              .then(function() {
+                console.log(`${item.product_number}: successfully updated!`)
+              })
+              .catch(error => {
+                console.error('Error updating document: ', error)
+                commit('setError', error.message)
+              })
+            }
+          })
+      })
+
+      // Set Shipped order to new DB
+      refHistoryOrder
+        .doc(order.id)
+        .set(order)
+        .then(function() {
+          console.log(`${order.id}: successfully added!`)
+        })
+        .catch(error => {
+          console.error('Error seting document: ', error)
+          commit('setError', error.message)
+        })
+    })
   }
 }

@@ -1,4 +1,4 @@
-export const mutations = {
+export const mutations = {/* eslint-disable */ 
   setUser(state, payload) {
     state.user = payload
   },
@@ -13,5 +13,14 @@ export const mutations = {
   },
   setInvoiceLists(state, payload) {
     state.invoiceLists = payload
+  },
+  setPaidDate(state, payload) {
+    state.paidDate = payload
+  },
+  setStockLists(state, payload) {
+    state.stockLists = payload
+  },
+  setShelfLists(state, payload) {
+    state.shelfLists = payload
   }
 }

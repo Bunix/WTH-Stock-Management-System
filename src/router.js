@@ -15,6 +15,10 @@ const routerOptions = [
     component: 'Invoice'
   },
   {
+    path: '/history',
+    component: 'HistoryOrder'
+  },
+  {
     path: '/getdata',
     component: 'GetData'
   },
@@ -38,6 +42,14 @@ const routerOptions = [
     path: '/barcode',
     component: 'Barcode'
     // beforeRouteEnter: checkBarcode
+  },
+  {
+    path: '/barcodeproduct',
+    component: 'BarcodeProduct'
+  },
+  {
+    path: '/invoice-temp',
+    component: 'InvoiceTemplate'
   }
 ]
 

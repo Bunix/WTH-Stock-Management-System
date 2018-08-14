@@ -10,6 +10,23 @@
         <span>Add New Barcode</span>
       </v-tooltip>
 
+      <template>
+        <v-form v-on:submit.stop.prevent="generateBarcode">
+          <v-container>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <v-text-field
+                  label="Start Position"
+                  single-line
+                  solo
+                  v-model="barcodeStartPos"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-form>
+      </template>
+
       <v-spacer></v-spacer>
 
       <v-btn color="primary" @click.native="print('updateStock')">
@@ -23,7 +40,7 @@
     <v-container grid-list-md id="barcode-paper">
       <v-layout row wrap>
         <v-flex v-for="i in 60" :key="`2${i}`" xs3>
-          <v-card class="barcode" v-if="i < barcodeStartPos">
+          <!-- <v-card class="barcode" v-if="i < barcodeStartPos">
             <v-card-text class="px-0">
               
             </v-card-text>
@@ -31,6 +48,11 @@
           <v-card class="barcode" v-else>
             <v-card-text class="px-0" v-if="typeof barcodeLists[i-barcodeStartPos] !== 'undefined'">
               <svg v-bind:id="'barcode-' + i"></svg>
+            </v-card-text>
+          </v-card> -->
+          <v-card class="barcode">
+            <v-card-text class="px-0">
+              <svg v-bind:id="'barcode-' + i" v-bind:ref="'barcode-' + i"></svg>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -44,25 +66,21 @@ import JsBarcode from 'jsbarcode'
 import html2canvas from 'html2canvas'
 /* eslint-disable */
 export default {
-  // Use this function if want to redirect user to home when they not select barcode.
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     /* eslint-disable */
-  //     try {
-  //       if(vm.$store.getters.getBarcodeLists === null) {
-  //         vm.$store.dispatch('returnHome')
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   })
-  // },
   data() {
     return {
       barcodeStartPos: 1,
+      barcodeLastPos: 1,
       barcodeLists: this.$store.getters.getBarcodeLists,
       barcodeSize: [248, 350],
       barcodePaperSize: [2480, 3508]
+    }
+  },
+  watch: {
+    barcodeStartPos() {
+      // console.log(this.barcodeLists)
+      this.barcodeLists.forEach((barcode, i) => {
+        this.$refs['barcode-' + (i + 1)][0]
+      })
     }
   },
   methods: {
@@ -86,20 +104,37 @@ export default {
       if(printOption === 'updateStock') {
         this.$store.dispatch('updateStock', this.barcodeLists)
       }
+    },
+    generateBarcode() {
+      // Reset all barcode in page
+      this.barcodeLists.forEach((element, i) => {
+        const removebarcode = document.getElementById('barcode-' + (parseInt(this.barcodeLastPos) + parseInt(i)))
+        removebarcode.innerHTML = ''
+      })
+      // Regenerate barcode with new start position
+      this.barcodeLists.forEach((element, i) => {
+        JsBarcode(`#barcode-${parseInt(this.barcodeStartPos) + parseInt(i)}`, element.order_number)
+      })
+      // Set last barcode position
+      this.barcodeLastPos = this.barcodeStartPos
     }
   },
   mounted() {
     // Generate barcode when element is render.
     this.$nextTick(() => {
       this.barcodeLists.forEach((element, i) => {
-        JsBarcode(`#barcode-${this.barcodeStartPos + i}`, element.basicInformation.orderNumber)
+        if(element.order_number !== undefined) {
+          JsBarcode(`#barcode-${1 + parseInt(i)}`, element.order_number)
+          return
+        }
+          JsBarcode(`#barcode-${1 + parseInt(i)}`, element.id)
       })
     })
   }
 }
 </script>
 
-<style>
+<style scoped>
 
   .font-red {
     color: rgb(230, 49, 49)
@@ -118,6 +153,11 @@ export default {
     min-height: 178px;
     max-height: 178px;
     padding: 0.5rem;
+  }
+
+  .barcode.card {
+    box-shadow: none;
+    border: 1px solid #eee;
   }
 
   .barcode svg {

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "barcode-management-system",
+  "private_key_id": "214a3f62145f3deeb69fdb0752cc180d9b23ba29",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDfiIBdw1dMjAl8\nek3LsQ7GglZkZ6pLwE/yR+3ofeevM0sndzL3nDC20vugoJM0uHkQeF1UePan98mR\ndaw1h/X/G3X969Of/iZTSP8CX5tJ27YiVowlqIu4158MCeC6akNZiKAjOzJw03IN\nb8onTPMQnniEWeZyBKssXIfi+C+QyRuNpZMIEpIxhEB4rzras0rPlP7voBiH2Kxg\nylmuycULOUbboyzNGSqyAhbIakdZgsSd8CLrRoxmlHeta9QqJvXTeKfuIZb3fS5p\nnfnQ+z5b0xAyHtGumPnhShgwr4U3AuWgtQ9OQ6knjf8fdig3Pky5wE/PHfYeta0A\nt6pGLwxnAgMBAAECggEAZ1xW/wQ0edDHEif7kRRuIJxkFklZFW33ibB48ehGGV0+\ngyE7EAPJAsDMWZnmd5pVYKhHf6fvZfvN2NTwrFASD8RC6wcA9Bow3pICWLact6pA\nreAXLdKhyPbrNEXdBFXejqf+ZEwbJtCfDFeEwmdyfVzJnWl0hYRjIkAnFWxtkiSO\ntLTOPieTSQWmWuW3MPa/a4fTyh3J6Lvho194iF/0SZnxQsDsuL4h3nLsvbwIP2+L\nYpf08H4eY2NvnRaLluzVojHb2iDEIjC/Eaf8iJZs3vLHHv3Nu9hcTdSTNNvl7t2S\nBu/e/fQlSNAQ6WExE1PMua0Y6mC3aQDpGFyUQs9/AQKBgQDzuV22icBu0D0SZBO1\ngzb+yWB6Bvm2a62ubpcUxTpHtTfB0Juo1SctwttYtLduUg8mRc6c5j4jp2EEr6eD\nMO7ITFk0Lf9gkrnSbv8P7PZ28VAAqXLcT9MjT0XsmfA7vXHkuHd6pVz65/bIRiVT\nICAkDCutZidjedNr6ns2ovOO5QKBgQDqysoiWRoIejU1X+1G+ZBu4JGEfKQNLBF+\nW55aeOXAkRZg2N176Ya2rY50Iwh9sl4r17J9kXEro+HrjYdrWg+FzENsFIEcsAIQ\niZB3ZvefOiBXBUBCvMuU1BqZQxalkMj0Ken/3OmgfMZN4dA0EnsmrALFWrCK/igd\nuxZ/zrktWwKBgQC+zfDi1gcT+ezF+BlB8h7c6vSfs9RNDxGizKt0tE9DEkk7b8Bd\nNbp9Zd5pHNm6AX4gvWfah5pAOWqHy6h92ZImtzbi1dvnVBcr+n+ujRoK1jKGwiHM\n/qVSMF6Ss5VSf6appAzNtKYNPAqEkf3ojO78qZaMIrxVcWumQaUCiiHZTQKBgH0L\nCUHnwDSZmTLW5tBw4xoZ4YX0t44IVTy9YIWAc6Pt4UQs2zA9+6/YmNCDQ+dlkj+5\nPWcgiWwbeJtxoZhru26fjZzHAsgbeM4D5Xuhy+jyFP0jX8jrMWUO3SeYkjwU8uEO\nXYAV0BrXuOkLhU3mNc4vt74RgYpUt1q2I9JnbzmXAoGATEvW1ax1ESaNz10ms5gf\nnub0w7OzrgGEKtVSSOBNo4p/vWvCIK9a7mgAh1fmwze3AX5KOO5vdgh0Ay6yoILA\ncwFcoo1xeryIQ1EjV7iVr7qucssuFXerml9uVlLTS9fXeIT48bzeLsWYt2xTTtJR\nnEa83BpOq73olqvmcmM6OGU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-r0mrg@barcode-management-system.iam.gserviceaccount.com",
+  "client_id": "114401680885339007030",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-r0mrg%40barcode-management-system.iam.gserviceaccount.com"
+}
