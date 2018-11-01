@@ -1,6 +1,6 @@
 export const state = {
   // appName: ' STOCK MANAGEMENT',
-  appName: ' TEST NEW BRANCH',
+  appName: 'WTH STOCK MANAGEMENT',
   user: null,
   error: null,
   loading: false,
