@@ -135,7 +135,9 @@ export default {/* eslint-disable */
   methods: {/* eslint-disable */
     getProductInfo(item) {
       if(item !== undefined) {
-        return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(item.thumbnail) ? item.thumbnail : 'https://www.freeiconspng.com/uploads/no-image-icon-15.png'
+        return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(item.thumbnail) 
+          ? item.thumbnail 
+          : 'https://www.freeiconspng.com/uploads/no-image-icon-15.png'
       } else {
         return 'https://www.freeiconspng.com/uploads/no-image-icon-15.png'
       }
